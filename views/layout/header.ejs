@@ -1,0 +1,53 @@
+<nav>
+    <div class="nav-brand"><a href="/">ExpressApp</a></div>
+    <ul class="nav-links">
+        <li><a href="/items">Items</a></li>
+        <% if (currentUser) { %>
+            <li><a href="/items/new">Add Item</a></li>
+            <li><a href="/profile">Profile (<%= currentUser.name %>)</a></li>
+            <li>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="nav-btn">Logout</button>
+                </form>
+            </li>
+            <% } else { %>
+                <li><a href="/login">Login</a></li>
+                <% } %>
+    </ul>
+</nav>
+
+<% if (messages.success) { %>
+    <div class="alert alert-success" id="alert-success">
+        <span>
+            <%= messages.success %>
+        </span>
+        <button type="button" class="alert-close" onclick="closeAlert('alert-success')">&times;</button>
+    </div>
+    <% } %>
+        <% if (messages.error) { %>
+            <div class="alert alert-error" id="alert-error">
+                <span>
+                    <%= messages.error %>
+                </span>
+                <button type="button" class="alert-close" onclick="closeAlert('alert-error')">&times;</button>
+            </div>
+            <% } %>
+
+                <script>
+                    function closeAlert(id) {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            el.style.opacity = '0';
+                            setTimeout(() => el.remove(), 500);
+                        }
+                    }
+
+                    document.addEventListener('DOMContentLoaded', () => {
+                        ['alert-success', 'alert-error'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                setTimeout(() => closeAlert(id), 5000);
+                            }
+                        });
+                    });
+                </script>

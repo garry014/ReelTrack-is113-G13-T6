@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Items - ExpressApp</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('../layout/header') %>
+        <div class="container">
+            <h1>All Items</h1>
+            <div class="item-grid">
+                <% items.forEach(item=> { %>
+                    <div class="card item-card">
+                        <span class="badge">
+                            <%= item.category %>
+                        </span>
+                        <h3>
+                            <%= item.title %>
+                        </h3>
+                        <p class="price">$<%= item.price %>
+                        </p>
+                        <p>
+                            <%= item.description.substring(0, 100) %>...
+                        </p>
+                        <p style="margin-top: auto; padding-top: 1rem; color: var(--text-light); font-size: 0.875rem;">
+                            Posted by: <%= item.owner.name %>
+                        </p>
+                        <a href="/items/<%= item._id %>" style="margin-top: 1rem;">View Details</a>
+                    </div>
+                    <% }) %>
+            </div>
+        </div>
+</body>
+
+</html>
