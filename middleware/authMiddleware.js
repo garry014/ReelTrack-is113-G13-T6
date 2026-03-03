@@ -19,6 +19,8 @@ const isOwner = async (req, res, next, model) => {
     next();
 };
 
+// TODO: isAdmin
+
 module.exports = {
     isLoggedIn,
     isOwner

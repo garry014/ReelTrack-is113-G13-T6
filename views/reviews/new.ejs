@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a Review
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('../layout/header') %>
+
+        <div class="container" style="max-width: 600px; margin: 2rem auto;">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Write a Review
+            </h2>
+
+            <div class="card form-card">
+                <form action="/reviews/new/<%= movie._id %>" method="POST">
+                    <div style="margin-bottom: 1.5rem;">
+                        <% if (error) { %>
+                            <div class="alert alert-error">
+                                <%= error %>
+                            </div>
+                            <% } %>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="rating" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+                            Rating (1-5):*
+                        </label>
+                        <select name="rating" id="rating"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;"
+                            required>
+                            <option value="" disabled selected>Select a rating...</option>
+                            <option value="5">★★★★★ - Excellent (5)</option>
+                            <option value="4">★★★★☆ - Good (4)</option>
+                            <option value="3">★★★☆☆ - Average (3)</option>
+                            <option value="2">★★☆☆☆ - Poor (2)</option>
+                            <option value="1">★☆☆☆☆ - Terrible (1)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reviewText" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+                            Your Review:*
+                        </label>
+                        <textarea name="reviewText" id="reviewText"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; resize: vertical;"
+                            rows="6"
+                            placeholder="Share your thoughts about the movie! What did you like? What didn't you like?"
+                            required></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label>
+                            <input type="checkbox" name="isAnonymous" id="isAnonymous"> Post anonymously
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
+                        <a href="/movies/<%= movie._id %>/reviews"
+                            style="color: var(--text-light); text-decoration: none;">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+</body>
+
+</html>

@@ -46,10 +46,12 @@ server.use(async (req, res, next) => {
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const itemRoutes = require('./routes/itemRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 server.use('/', authRoutes);
 server.use('/items', itemRoutes);
+server.use('/reviews', reviewRoutes);
 server.use('/', userRoutes);
 
 server.get('/', (req, res) => {

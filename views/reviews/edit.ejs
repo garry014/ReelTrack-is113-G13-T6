@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Review - <%= REVIEW.movieId.title %>
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('../layout/header') %>
+
+        <div class="container" style="max-width: 600px; margin: 2rem auto;">
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Edit Your Review for <%= REVIEW.movieId.title %>
+            </h2>
+
+            <div class="card form-card">
+                <!-- Using _method=PUT assuming method-override is set up -->
+                <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST">
+                    <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="rating" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Rating
+                            (1-5):</label>
+                        <select name="rating" id="rating"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;"
+                            required>
+                            <option value="5" <%=REVIEW.rating===5 ? 'selected' : '' %>>★★★★★ - Excellent (5)</option>
+                            <option value="4" <%=REVIEW.rating===4 ? 'selected' : '' %>>★★★★☆ - Good (4)</option>
+                            <option value="3" <%=REVIEW.rating===3 ? 'selected' : '' %>>★★★☆☆ - Average (3)</option>
+                            <option value="2" <%=REVIEW.rating===2 ? 'selected' : '' %>>★★☆☆☆ - Poor (2)</option>
+                            <option value="1" <%=REVIEW.rating===1 ? 'selected' : '' %>>★☆☆☆☆ - Terrible (1)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reviewText" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Your
+                            Review:</label>
+                        <textarea name="reviewText" id="reviewText"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; resize: vertical;"
+                            rows="6" required><%= REVIEW.reviewText %></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
+                        <a href="/reviews/movie/<%= REVIEW.movieId._id %>"
+                            style="color: var(--text-light); text-decoration: none;">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Update Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+</body>
+
+</html>

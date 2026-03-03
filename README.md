@@ -1,12 +1,9 @@
 # Express/EJS Web Application
 
-A full-stack Node.js application featuring authentication and CRUD operations.
+
 
 ## Features
 - **Authentication**: Register, Login, Logout with session management.
-- **CRUD Operations**: Create, Read, Update, and Delete items.
-- **Ownership**: Users can only edit or delete their own items.
-- **Styling**: Premium minimal UI using custom CSS.
 
 ## Tech Stack
 - Frontend: EJS, CSS
@@ -21,10 +18,13 @@ A full-stack Node.js application featuring authentication and CRUD operations.
    ```
 
 2. **Setup Environment**:
-   Update `.env` with your MongoDB URI.
+   Setup your environment variables in the .env file.
 
 3. **Run the app**:
    ```bash
    node app.js
    ```
    Visit http://localhost:8000
+
+## AI Declaration
+This project was created with the assistance of LLM. LLM was used to ideate project ideas, generate the frontend designs, writing the README.md, and some of the initial setup of the file structure.
