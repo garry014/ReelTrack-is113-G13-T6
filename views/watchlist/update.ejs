@@ -1,0 +1,12 @@
+<h1>Update <%= movieId %></h1>
+<form action="/watchlist/<%= item._id %>" method="POST">
+  <label>Status:
+    <select name="status">
+      <option value="want_to_watch" <%= item.status === 'want_to_watch' ? 'selected' : '' %>>Want to Watch</option>
+      <option value="watching" <%= item.status === 'watching' ? 'selected' : '' %>>Watching</option>
+      <option value="watched" <%= item.status === 'watched' ? 'selected' : '' %>>Watched</option>
+    </select>
+  </label>
+  <p><label>Notes: <textarea name="notes"><%= item.notes %></textarea></label></p>
+  <button type="submit">Update</button>
+</form>
