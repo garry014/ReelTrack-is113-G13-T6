@@ -49,11 +49,13 @@ const authRoutes = require('./routes/authRoutes');
 const movieRoutes = require('./routes/movieRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
+const WatchlistRoutes = require('./routes/watchlistRoutes');
 
 server.use('/', authRoutes);
 server.use('/movies', movieRoutes);
 server.use('/reviews', reviewRoutes);
 server.use('/', userRoutes);
+server.use('/watchlist', WatchlistRoutes)
 
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

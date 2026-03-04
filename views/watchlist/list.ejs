@@ -1,0 +1,20 @@
+<h1>My Watchlist</h1>
+<a href="/watchlist/new">Add Movie</a>
+
+<table>
+  <tr><th>Movie ID</th><th>Status</th><th>Notes</th><th>Added</th><th>Actions</th></tr>
+  <% watchlist.forEach(item => { %>
+    <tr>
+      <td><%= item.movieId %></td>
+      <td><%= item.status.replace('_', ' ').toUpperCase() %></td>
+      <td><%= item.notes || '-' %></td>
+      <td><%= item.addedAt.toDateString() %></td>
+      <td>
+        <a href="/watchlist/<%= item._id %>/edit">Edit</a>
+        <form action="/watchlist/<%= item._id %>/delete" method="POST" style="display:inline">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+</table>
