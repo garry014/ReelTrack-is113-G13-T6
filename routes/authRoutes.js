@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
         req.session.userId = user._id;
         req.session.userName = user.name;
         req.flash('success', `Welcome back, ${user.name}!`);
-        res.redirect('/items');
+        res.redirect('/movies');
     } catch (err) {
         req.flash('error', 'Something went wrong');
         res.redirect('/login');

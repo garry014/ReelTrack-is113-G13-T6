@@ -1,0 +1,54 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    --title-color: #ffd701
+}
+
+body{
+    background-color: #020307;
+    color: white
+}
+
+h2{
+    margin-top: 2rem;
+    text-align: center;
+    color: var(--title-color);
+    font-weight: 500;
+}
+
+.details{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.details img{
+    max-height: 350px;
+}
+
+.details div{
+    margin-left: 2rem
+}
+
+.details p, .story p:first-child{
+    color: var(--title-color);
+    font-size: 1.1rem;
+}
+
+.story{
+    margin: 2rem 5rem;
+}
+
+.all-reviews{
+    max-width: 1000px;
+    margin: auto;
+}
+
+.review{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid white;
+}

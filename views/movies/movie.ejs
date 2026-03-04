@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+     ReelTrack
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/movie.css">
+</head>
+
+<body>
+    <%- include('../layout/header') %>
+        <h2>Avengers: Infinity War</h2>
+    <section class="details">
+        <img src="https://m.media-amazon.com/images/M/MV5BMzE1YjYxMWItMTRjMS00NmY5LTg0NTAtNTE1MmQ1OGMzNGM5XkEyXkFqcGc@._V1_.jpg"/>
+        <div>
+            <p>Cast:</p><span>Neve Campbell, Courteney Cox, Mason Gooding, Jasmin Savoy Brown, Roger L. Jackson, David Arquette</span>
+            <p>Director:</p><span>Kevin Williamson</span>
+            <p>Genre:</p><span>Horror</span>
+            <p>Duration:</p><span>120 minutes</span>
+            <p>Language:</p><span>English</span>
+        </div>
+    </section>
+    <section class="story">
+        <p>Synopsis</p>
+        <p>When a new Ghostface killer emerges in the quiet town where Sidney Prescott (Neve Campbell) has built a new life, her darkest fears are realized as her daughter (Isabel May) becomes the next target. Determined to protect her family, Sidney must face the horrors of her past to put an end to the bloodshed once and for all.</p>
+    </section>
+    <section class="all-reviews">
+        <h3>Reviews</h3><hr style="border-color: #ff2424;">
+        <div class="review">
+            <p>Rating: {put a number}</p>
+            <p>Movie is good</p>
+            <div>
+                <span style="color: #ffd701;">By</span> <span>{put in username}</span>
+                <span style="color: #ffd701;">Created</span> <span>{put in datetime}</span>
+                <span style="color: #ffd701;">Edited</span> <span>{datetime}</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

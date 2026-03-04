@@ -1,20 +1,19 @@
-<nav>
-    <div class="nav-brand"><a href="/">ReelTrack</a></div>
-    <ul class="nav-links">
-        <li><a href="/reviews/movie/69a6c39ad34f76122d5eca20">Reviews</a></li>
+<header>
+    <h3>ReelTrack</h3>
+    <nav>
+        <a href="/movies">Movies</a>
+        <a href="/reviews/movie/69a6c39ad34f76122d5eca20">Reviews</a>
         <% if (currentUser) { %>
-            <li><a href="/items/new">Add Item</a></li>
-            <li><a href="/profile">Profile (<%= currentUser.name %>)</a></li>
-            <li>
-                <form action="/logout" method="POST" style="display: inline;">
-                    <button type="submit" class="nav-btn">Logout</button>
-                </form>
-            </li>
+            <a href="/movies/new">Add Movie</a>
+            <a href="/profile">Profile (<%= currentUser.name %>)</a>
+            <form action="/logout" method="POST" style="display: inline;">
+                <button type="submit" class="btn">Logout</button>
+            </form>
             <% } else { %>
-                <li><a href="/login">Login</a></li>
-                <% } %>
-    </ul>
-</nav>
+            <a class="btn" href="/login">Login</a>
+            <% } %>
+    </nav>
+</header>
 
 <% if (messages.success) { %>
     <div class="alert alert-success" id="alert-success">

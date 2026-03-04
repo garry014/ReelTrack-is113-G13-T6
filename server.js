@@ -45,12 +45,12 @@ server.use(async (req, res, next) => {
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
-const itemRoutes = require('./routes/itemRoutes');
+const movieRoutes = require('./routes/movieRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 server.use('/', authRoutes);
-server.use('/items', itemRoutes);
+server.use('/movies', movieRoutes);
 server.use('/reviews', reviewRoutes);
 server.use('/', userRoutes);
 

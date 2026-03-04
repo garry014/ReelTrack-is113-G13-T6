@@ -20,6 +20,10 @@ const movieSchema = new mongoose.Schema({
     posterUrl: {
         type: String,
     },
+    duration: {
+        type: Number,
+        required: true
+    },
     addedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

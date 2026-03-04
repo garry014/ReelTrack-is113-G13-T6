@@ -1,8 +1,8 @@
 :root {
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
-    --bg: #f8fafc;
-    --text: #1e293b;
+    --bg: #020307;
+    --text: white;
     --text-light: #64748b;
     --white: #ffffff;
     --error: #ef4444;
@@ -24,39 +24,39 @@ body {
     line-height: 1.6;
 }
 
-nav {
-    background: var(--white);
-    padding: 1rem 5%;
+header{
+    position: sticky;
+    top:0;
+    width: 100%;
+    padding: 15px 150px;
+    background: grey;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
 }
 
-.nav-brand a {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary);
-    text-decoration: none;
-}
-
-.nav-links {
-    list-style: none;
+nav{
     display: flex;
-    gap: 2rem;
+    gap: 30px;
     align-items: center;
 }
 
-.nav-links a {
+nav a{
+    color: white;
     text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    transition: color 0.2s;
+    transition: 0.4s all linear;
 }
 
-.nav-links a:hover {
-    color: var(--primary);
+nav a:hover{
+    color:rgb(0, 255, 255);
+    scale: 1.5;
+    rotate: 360deg
+}
+
+.btn{
+    background-color: #ff2424;
+    padding: 5px 10px;
+    border-radius: 0.5rem
 }
 
 .container {
@@ -71,6 +71,42 @@ nav {
     border-radius: 12px;
     box-shadow: var(--shadow);
     margin-bottom: 2rem;
+    color: var(--bg);
+}
+
+.movies{
+    max-width: 1000px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.movies-container{
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px,auto));
+    gap: 1rem;
+}
+
+.movies-container .movie-card{
+    width: 100%;
+    text-decoration: none;
+    color: white;
+    transition: 0.4s all linear;
+}
+
+.movies-container .movie-card img{
+    width: 100%;
+    height: 85%;
+}
+
+.movies-container .movie-card p{
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
+
+.movies-container .movie-card:hover{
+    scale: 1.1;
 }
 
 h1 {
@@ -96,7 +132,6 @@ select {
     border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 1rem;
-    background: var(--bg);
 }
 
 input[type="checkbox"] {
@@ -160,33 +195,6 @@ button:hover {
 .alert-error {
     background: #fee2e2;
     color: #991b1b;
-}
-
-.item-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.item-card {
-    display: flex;
-    flex-direction: column;
-}
-
-.price {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin: 1rem 0;
-}
-
-.badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background: var(--bg);
 }
 
 .btn-delete {
