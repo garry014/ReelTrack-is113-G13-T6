@@ -20,6 +20,10 @@ const movieSchema = new mongoose.Schema({
     posterUrl: {
         type: String,
     },
+    synopsis: {
+        type: String,
+        required: true
+    },
     duration: {
         type: Number,
         required: true

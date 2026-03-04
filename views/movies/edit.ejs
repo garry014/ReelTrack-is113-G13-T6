@@ -4,43 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit <%= item.title %> - ReelTrack</title>
+    <title>Edit <%= movie.title %> - ReelTrack</title>
     <link rel="stylesheet" href="/css/style.css">
+    <script defer src="/js/movieEdit.js"></script>
 </head>
 
 <body>
     <%- include('../layout/header') %>
         <div class="container">
             <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <h1>Edit Item</h1>
-                <form action="/items/<%= item._id %>?_method=PUT" method="POST">
+                <h1>Edit Movie</h1>
+                <form id="editMovieForm">
+                    <input type="hidden" id="movieid" value="<%=movie._id %>">
                     <div class="form-group">
                         <label for="title">Title</label>
-                        <input type="text" id="title" name="title" value="<%= item.title %>" required>
+                        <input type="text" id="title" name="title" value="<%= movie.title %>" required>
                     </div>
                     <div class="form-group">
-                        <label for="price">Price ($)</label>
-                        <input type="number" id="price" name="price" step="0.01" value="<%= item.price %>" required>
+                        <label for="director">Director</label>
+                        <input type="text" id="director" name="director" value="<%= movie.director %>" required>
                     </div>
                     <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category" name="category" required>
-                            <option value="Electronics" <%=item.category==='Electronics' ? 'selected' : '' %>
-                                >Electronics</option>
-                            <option value="Furniture" <%=item.category==='Furniture' ? 'selected' : '' %>>Furniture
+                        <label for="year">Release Year</label>
+                        <input type="number" id="year" name="year" value="<%= movie.releaseYear %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="poster">Poster URL</label>
+                        <input type="url" id="poster" name="poster" value="<%= movie.posterUrl %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration in mins (3 digits)</label>
+                        <input type="number" id="duration" name="duration" value="<%= movie.duration %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <select id="genre" name="genre" required>
+                            <option value="Action" <%=movie.genre==='Action' ? 'selected' : '' %>
+                                >Action</option>
+                            <option value="Sci-Fi" <%=movie.genre==='Sci-Fi' ? 'selected' : '' %>>Sci-Fi
                             </option>
-                            <option value="Clothing" <%=item.category==='Clothing' ? 'selected' : '' %>>Clothing
+                            <option value="Fantasy" <%=movie.genre==='Fantasy' ? 'selected' : '' %>>Fantasy
                             </option>
-                            <option value="Books" <%=item.category==='Books' ? 'selected' : '' %>>Books</option>
-                            <option value="Other" <%=item.category==='Other' ? 'selected' : '' %>>Other</option>
+                            <option value="Thriller" <%=movie.genre==='Thriller' ? 'selected' : '' %>>Thriller</option>
+                            <option value="Tragedy" <%=movie.genre==='Tragedy' ? 'selected' : '' %>>Tragedy</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" name="description" rows="5"
-                            required><%= item.description %></textarea>
+                        <label for="synopsis">Synopsis</label>
+                        <textarea id="synopsis" name="synopsis" rows="5"
+                            required><%= movie.synopsis %></textarea>
                     </div>
-                    <button type="submit">Update Item</button>
+                    <button type="submit">Update movie</button>
                 </form>
             </div>
         </div>

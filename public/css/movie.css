@@ -41,14 +41,18 @@ h2{
     margin: 2rem 5rem;
 }
 
-.all-reviews{
-    max-width: 1000px;
-    margin: auto;
+.links{
+    display: flex;
+    justify-content: center;
+    gap: 5rem;
 }
 
-.review{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    border: 1px solid white;
+.links a{
+    background-color: aqua;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.links a:hover{
+    background-color: rgba(0, 255, 255, 0.747);
 }

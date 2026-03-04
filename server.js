@@ -23,6 +23,7 @@ server.set('views', path.join(__dirname, 'views'));
 // Middleware
 server.use(express.static(path.join(__dirname, 'public')));
 server.use(express.urlencoded({ extended: true }));
+server.use(express.json());
 server.use(methodOverride('_method'));
 server.use(session({
     secret: process.env.SESSION_SECRET || 'top-secret',

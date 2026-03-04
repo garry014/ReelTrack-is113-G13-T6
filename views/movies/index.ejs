@@ -15,7 +15,7 @@
         <hr style="border-color: #ff2424;">
         <div class="movies-container">
             <% allMovies.forEach((movie) => { %>
-                <a href="/movie" class="movie-card">
+                <a href="/movies/<%= movie._id %>" class="movie-card">
                     <img src= <%= movie.posterUrl %> />
                     <p><%= movie.title %></p>
                     <span><%=movie.duration %> mins</span>

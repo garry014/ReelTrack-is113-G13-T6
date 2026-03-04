@@ -20,8 +20,16 @@ const isOwner = async (req, res, next, model) => {
 };
 
 // TODO: isAdmin
+const isAdmin = (req, res, next) => {
+    if(res.locals.currentUser.role !== 'admin'){
+        req.flash('error', 'Only admin can perform this action');
+        return res.redirect('/login')
+    }
+    next()
+}
 
 module.exports = {
     isLoggedIn,
-    isOwner
+    isOwner,
+    isAdmin
 };
