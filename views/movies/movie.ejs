@@ -29,12 +29,10 @@
                 class="btn" href="/movies/<%= movie._id %>/edit">Edit movie</a>
 
                 <button id="delete" style="background-color:red" 
-                data-movieid="<%= movie._id %>">Delete movie</a>
-                <!-- Add your routes to action -->
-                <form action="" method="POST">
-                    <input type="hidden" name="movieid" value="<%= movie._id %>">
-                    <button type="submit">Add to Watchlist</button>
-                </form>
+                data-movieid="<%= movie._id %>">Delete movie</a></button>
+
+                <a class="btn" style="text-decoration: none;text-align: center
+                ; color:white;background-color: rgb(255, 0, 255);" href="/watchlist/new">Add to Watchlist</a>
             <% } %>
         </div>
     </section>
