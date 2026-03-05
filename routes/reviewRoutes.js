@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Review = require('../models/Review');
+const { Review, getAverageRating } = require('../models/Review');
 const Movie = require('../models/Movie');
 const { isLoggedIn, isOwner } = require('../middleware/authMiddleware');
 
@@ -26,7 +26,7 @@ router.get('/new/:movieId', isLoggedIn, async (req, res) => {
 router.post('/new/:movieId', isLoggedIn, async (req, res) => {
     let rating = req.body.rating;
     let reviewText = req.body.reviewText;
-    let isAnonymous = req.body.isAnonymous;
+    let isAnonymous = req.body.isAnonymous === 'on'; // checkbox sends "on" or undefined
 
     try {
         const review = new Review({
@@ -47,7 +47,7 @@ router.post('/new/:movieId', isLoggedIn, async (req, res) => {
     }
 });
 
-// Read all reviews for a given movieId
+// Read all reviews for a given movieId (with pagination)
 router.get('/movie/:movieId', async (req, res) => {
     const MOVIE = await Movie.findById(req.params.movieId);
     if (!MOVIE) {
@@ -55,14 +55,29 @@ router.get('/movie/:movieId', async (req, res) => {
     }
 
     const MOVIE_ID = req.params.movieId;
-    const reviews = await Review.find({ movieId: MOVIE_ID }).populate('owner');
+
+    // Pagination params
+    const limit = parseInt(req.query.limit) || 5;        // reviews per page
+    const currentPage = parseInt(req.query.page) || 1;  // current page number
+    const skip = (currentPage - 1) * limit;             // how many to skip
+
+    const totalReviews = await Review.countDocuments({ movieId: MOVIE_ID });
+    const totalPages = Math.ceil(totalReviews / limit);
+
+    const reviews = await Review.find({ movieId: MOVIE_ID })
+        .populate('owner')
+        .sort({ createdAt: -1 })   // newest first
+        .skip(skip)     // skip the previous pages
+        .limit(limit);  // limit the number of reviews per page
+
+    const averageRating = await getAverageRating(MOVIE_ID);
 
     // Check if the logged-in user has already reviewed this movie
     const hasReviewed = req.session.userId
         ? await Review.exists({ movieId: MOVIE_ID, owner: req.session.userId })
         : false;
 
-    res.render('reviews/index', { reviews, MOVIE_ID, hasReviewed });
+    res.render('reviews/index', { reviews, MOVIE_ID, hasReviewed, averageRating, currentPage, totalPages, limit });
 });
 
 // Edit review display page
@@ -78,8 +93,12 @@ router.get('/:id', isLoggedIn, async (req, res, next) => {
 router.put('/:id', isLoggedIn, async (req, res, next) => {
     await isOwner(req, res, next, Review);
 }, async (req, res) => {
+    let rating = req.body.rating;
+    let reviewText = req.body.reviewText;
+    let isAnonymous = req.body.isAnonymous === 'on'; // checkbox sends "on" or undefined
+
     try {
-        await Review.findByIdAndUpdate(req.params.id, req.body, { runValidators: true });
+        await Review.findByIdAndUpdate(req.params.id, { rating, reviewText, isAnonymous, edited: true }, { runValidators: true });
         req.flash('success', 'Item updated successfully!');
         res.redirect(`/reviews/movie/${req.body.movieId}`);
     } catch (err) {

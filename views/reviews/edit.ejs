@@ -42,6 +42,13 @@
                             rows="6" required><%= REVIEW.reviewText %></textarea>
                     </div>
 
+                    <div style="margin-bottom: 1.5rem;">
+                        <label>
+                            <input type="checkbox" name="isAnonymous" id="isAnonymous" value="on" <%=REVIEW.isAnonymous
+                                ? 'checked' : '' %>> Post anonymously
+                        </label>
+                    </div>
+
                     <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
                         <a href="/reviews/movie/<%= REVIEW.movieId._id %>"
                             style="color: var(--text-light); text-decoration: none;">Cancel</a>

@@ -2,7 +2,6 @@
     <h3>ReelTrack</h3>
     <nav>
         <a href="/movies">Movies</a>
-        <a href="/reviews/movie/69a6c39ad34f76122d5eca20">Reviews</a>
         <% if (currentUser) { %>
             <a href="/movies/new">Add Movie</a>
             <a href="/profile">Profile (<%= currentUser.name %>)</a>
@@ -10,8 +9,8 @@
                 <button type="submit" class="btn">Logout</button>
             </form>
             <% } else { %>
-            <a class="btn" href="/login">Login</a>
-            <% } %>
+                <a class="btn" href="/login">Login</a>
+                <% } %>
     </nav>
 </header>
 

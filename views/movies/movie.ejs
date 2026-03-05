@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-     ReelTrack
+        ReelTrack
     </title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/movie.css">
@@ -13,53 +13,66 @@
 
 <body>
     <%- include('../layout/header') %>
-        <h2><%= movie.title %></h2>
-    <section class="details">
-        <img src=<%= movie.posterUrl %>>
-        <div>
-            <p>Director:</p><span><%= movie.director %></span>
-            <p>Genre:</p><span><%= movie.genre %></span>
-            <p>Duration:</p><span><%= movie.duration %> minutes</span>
-            <p>Release Year:</p><span><%= movie.releaseYear %></span>
-        </div>
-        <div style="display: flex;flex-direction: column;row-gap: 1rem;">
-            <% if(currentUser){ %>
-                <a style="text-decoration: none;text-align: center
-                ; color:white;background-color: orange;"
-                class="btn" href="/movies/<%= movie._id %>/edit">Edit movie</a>
+        <h2>
+            <%= movie.title %>
+        </h2>
+        <section class="details">
+            <img src=<%=movie.posterUrl %>>
+            <div>
+                <p>Director:</p><span>
+                    <%= movie.director %>
+                </span>
+                <p>Genre:</p><span>
+                    <%= movie.genre %>
+                </span>
+                <p>Duration:</p><span>
+                    <%= movie.duration %> minutes
+                </span>
+                <p>Release Year:</p><span>
+                    <%= movie.releaseYear %>
+                </span>
+            </div>
+            <div style="display: flex;flex-direction: column;row-gap: 1rem;">
+                <% if(currentUser){ %>
+                    <a style="text-decoration: none;text-align: center
+                ; color:white;background-color: orange;" class="btn" href="/movies/<%= movie._id %>/edit">Edit
+                        movie</a>
 
-                <button id="delete" style="background-color:red" 
-                data-movieid="<%= movie._id %>">Delete movie</a></button>
+                    <button id="delete" style="background-color:red" data-movieid="<%= movie._id %>">Delete
+                        movie</a></button>
 
-                <a class="btn" style="text-decoration: none;text-align: center
+                    <a class="btn" style="text-decoration: none;text-align: center
                 ; color:white;background-color: rgb(255, 0, 255);" href="/watchlist/new">Add to Watchlist</a>
-            <% } %>
+                    <% } %>
+            </div>
+        </section>
+        <!-- Add your routes to the href -->
+        <div class="links">
+            <a href="/reviews/movie/<%= movie._id %>">Reviews</a><a href="">Comments</a>
         </div>
-    </section>
-    <!-- Add your routes to the href -->
-    <div class="links">
-        <a href="">Reviews</a><a href="">Comments</a>
-    </div>
-    <section class="story">
-        <p>Synopsis</p>
-        <p><%= movie.synopsis %></p>
-    </section>
+        <section class="story">
+            <p>Synopsis</p>
+            <p>
+                <%= movie.synopsis %>
+            </p>
+        </section>
 </body>
 <script>
     let deletebtn = document.getElementById('delete')
-        deletebtn.addEventListener('click', (event) => {
-            if(confirm('Are you sure you want to delete? (This is a irreversible action)')){
-                // fetch request to DELETE
-                fetch(`/movies/${deletebtn.dataset.movieid}`, {
-                    method: 'DELETE'
-                })
+    deletebtn.addEventListener('click', (event) => {
+        if (confirm('Are you sure you want to delete? (This is a irreversible action)')) {
+            // fetch request to DELETE
+            fetch(`/movies/${deletebtn.dataset.movieid}`, {
+                method: 'DELETE'
+            })
                 .then(response => response.json())
                 .then(data => {
                     alert(data.message);
                     location.href = data.redirect
                 })
                 .catch(error => alert(error.message))
-            }
-        })
+        }
+    })
 </script>
+
 </html>
