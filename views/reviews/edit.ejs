@@ -1,47 +1,51 @@
-<%- include('../layout/base', { pageTitle: 'Edit Review - ' + REVIEW.movieId.title }) %>
+<%- include('../layout/base', { pageTitle: 'Edit Review — ' + REVIEW.movieId.title }) %>
     <%- include('../layout/header') %>
 
-        <div class="container" style="max-width: 600px; margin: 2rem auto;">
-            <h2 style="margin-bottom: 1.5rem; text-align: center;">Edit Your Review for <%= REVIEW.movieId.title %>
-            </h2>
+        <div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+            <div class="mb-md fade-in-up">
+                <span class="section-label">Reviews</span>
+                <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Edit Your Review</h1>
+                <p class="text-muted text-sm mt-sm">Updating review for <strong style="color: var(--text);">
+                        <%= REVIEW.movieId.title %>
+                    </strong>.</p>
+            </div>
 
-            <div class="card form-card">
-                <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST">
+            <div class="card fade-in-up" style="animation-delay: 0.1s;">
+                <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST" id="edit-review-form">
                     <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="rating" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Rating
-                            (1-5):</label>
-                        <select name="rating" id="rating"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px;"
-                            required>
-                            <option value="5" <%=REVIEW.rating===5 ? 'selected' : '' %>>★★★★★ - Excellent (5)</option>
-                            <option value="4" <%=REVIEW.rating===4 ? 'selected' : '' %>>★★★★☆ - Good (4)</option>
-                            <option value="3" <%=REVIEW.rating===3 ? 'selected' : '' %>>★★★☆☆ - Average (3)</option>
-                            <option value="2" <%=REVIEW.rating===2 ? 'selected' : '' %>>★★☆☆☆ - Poor (2)</option>
-                            <option value="1" <%=REVIEW.rating===1 ? 'selected' : '' %>>★☆☆☆☆ - Terrible (1)</option>
+                    <div class="form-group">
+                        <label for="rating">Your Rating</label>
+                        <select name="rating" id="rating" required>
+                            <option value="5" <%=REVIEW.rating===5 ? 'selected' : '' %>>★★★★★ — Excellent (5)</option>
+                            <option value="4" <%=REVIEW.rating===4 ? 'selected' : '' %>>★★★★☆ — Good (4)</option>
+                            <option value="3" <%=REVIEW.rating===3 ? 'selected' : '' %>>★★★☆☆ — Average (3)</option>
+                            <option value="2" <%=REVIEW.rating===2 ? 'selected' : '' %>>★★☆☆☆ — Poor (2)</option>
+                            <option value="1" <%=REVIEW.rating===1 ? 'selected' : '' %>>★☆☆☆☆ — Terrible (1)</option>
                         </select>
                     </div>
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label for="reviewText" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Your
-                            Review:</label>
-                        <textarea name="reviewText" id="reviewText"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; resize: vertical;"
-                            rows="6" required><%= REVIEW.reviewText %></textarea>
+                    <div class="form-group">
+                        <label for="reviewText">Your Review</label>
+                        <textarea name="reviewText" id="reviewText" rows="6"
+                            required><%= REVIEW.reviewText %></textarea>
                     </div>
 
-                    <div style="margin-bottom: 1.5rem;">
-                        <label>
-                            <input type="checkbox" name="isAnonymous" id="isAnonymous" value="on" <%=REVIEW.isAnonymous
-                                ? 'checked' : '' %>> Post anonymously
+                    <div class="form-group" style="display: flex; align-items: center; gap: 0.6rem;">
+                        <input type="checkbox" name="isAnonymous" id="isAnonymous" value="on" <%=REVIEW.isAnonymous
+                            ? 'checked' : '' %>>
+                        <label for="isAnonymous"
+                            style="text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--text-muted); font-size: 0.875rem; margin: 0; cursor: pointer;">
+                            Post anonymously
                         </label>
                     </div>
 
+                    <div class="divider"></div>
+
                     <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
-                        <a href="/reviews/movie/<%= REVIEW.movieId._id %>"
-                            style="color: var(--text-light); text-decoration: none;">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Update Review</button>
+                        <a href="/reviews/movie/<%= REVIEW.movieId._id %>" class="btn btn-ghost"
+                            id="cancel-edit-review">Cancel</a>
+                        <button type="submit" class="btn btn-warning" id="update-review">✎ Update Review</button>
                     </div>
                 </form>
             </div>

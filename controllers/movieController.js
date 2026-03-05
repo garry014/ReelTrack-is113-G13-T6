@@ -1,29 +1,29 @@
 const Movie = require('../models/Movie')
 
-async function showAllMovies(req, res){
-    try{
+async function showAllMovies(req, res) {
+    try {
         const allMovies = await Movie.find();
-        res.render('movies/index', {allMovies});
+        res.render('movies/index', { allMovies, extraCSS: ['/css/movie.css'] });
     }
-    catch(error){
+    catch (error) {
         res.render('error', { message: 'Unable to retreive data' });
     }
 }
 
-async function getOneMovie(req, res){
-    try{
+async function getOneMovie(req, res) {
+    try {
         const movie = await Movie.findById(req.params.id)
         if (!movie) return res.render('error', { message: 'Movie not found' });
         res.render('movies/movie', { movie });
     }
-    catch(error){
+    catch (error) {
         res.render('error', { message: 'Invalid Movie ID' });
     }
 }
 
-async function addOneMovie(req, res){
-    try{
-        const movie = new Movie ({
+async function addOneMovie(req, res) {
+    try {
+        const movie = new Movie({
             title: req.body.title,
             genre: req.body.genre,
             releaseYear: req.body.year,
@@ -37,13 +37,13 @@ async function addOneMovie(req, res){
         req.flash('success', 'Movie added successfully!');
         res.redirect('/movies');
     }
-    catch(error){
+    catch (error) {
         req.flash('error', error.message);
         res.redirect('/movies/new');
     }
 }
 
-async function showEditForm(req, res){
+async function showEditForm(req, res) {
     try {
         const movie = await Movie.findById(req.params.id);
         if (!movie) return res.render('error', { message: 'Movie not found' });
@@ -55,7 +55,7 @@ async function showEditForm(req, res){
     }
 }
 
-async function editMovie(req, res){
+async function editMovie(req, res) {
     try {
         await Movie.findByIdAndUpdate(req.params.id, req.body, { runValidators: true });
         res.json({ message: 'Success, Movie updated', redirect: `/movies/${req.params.id}` })
@@ -65,12 +65,12 @@ async function editMovie(req, res){
     }
 }
 
-async function deleteMovie(req, res){
-    try{
+async function deleteMovie(req, res) {
+    try {
         await Movie.findByIdAndDelete(req.params.id)
-        res.json({message:'Sucess, Movie deleted', redirect: `/movies`})
+        res.json({ message: 'Sucess, Movie deleted', redirect: `/movies` })
     }
-    catch(error){
+    catch (error) {
         res.json({ message: `Failed, ${error.message}`, redirect: `/movies/${req.params.id}` })
     }
 }

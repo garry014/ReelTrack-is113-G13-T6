@@ -1,55 +1,65 @@
-<header>
-    <h4><a href="/movies">ReelTrack</a></h4>
-    <nav>
+<header class="site-header">
+    <a href="/movies" class="nav-logo" aria-label="ReelTrack Home">
+        <div class="nav-logo-icon">🎬</div>
+        <span class="nav-logo-text">Reel<span>Track</span></span>
+    </a>
+
+    <nav class="nav-links">
         <a href="/movies">Movies</a>
         <% if (currentUser) { %>
+            <a href="/watchlist">Watchlist</a>
+            <a href="/reviews">Reviews</a>
             <% if (currentUser.role==='admin' ) { %>
                 <a href="/movies/new">Add Movie</a>
                 <% } %>
-                    <a href="/profile">Profile (<%= currentUser.name %>)</a>
-                    <form action="/logout" method="POST" style="display: inline;">
-                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
-                    </form>
-                    <% } else { %>
-                        <a class="btn btn-outline-light btn-sm" style="scale: 1;" href="/login">Login</a>
-                        <% } %>
+                    <% } %>
     </nav>
+
+    <div class="nav-cta">
+        <% if (currentUser) { %>
+            <a href="/profile" class="btn btn-ghost" id="nav-profile">
+                👤 <%= currentUser.name %>
+            </a>
+            <form action="/logout" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-ghost" id="nav-logout">Logout</button>
+            </form>
+            <% } else { %>
+                <a href="/login" class="btn btn-ghost" id="nav-login">Login</a>
+                <a href="/register" class="btn btn-primary" id="nav-register">Get Started</a>
+                <% } %>
+    </div>
 </header>
 
-<% if (messages.success) { %>
-    <div class="alert alert-success" id="alert-success">
-        <span>
-            <%= messages.success %>
-        </span>
-        <button type="button" class="btn-close btn-close-white alert-close" aria-label="Close"
-            onclick="closeAlert('alert-success')"></button>
-    </div>
-    <% } %>
-        <% if (messages.error) { %>
-            <div class="alert alert-error" id="alert-error">
-                <span>
-                    <%= messages.error %>
-                </span>
-                <button type="button" class="btn-close btn-close-white alert-close" aria-label="Close"
-                    onclick="closeAlert('alert-error')"></button>
-            </div>
-            <% } %>
+<div class="page-wrapper">
 
-                <script>
-                    function closeAlert(id) {
-                        const el = document.getElementById(id);
-                        if (el) {
-                            el.style.opacity = '0';
-                            setTimeout(() => el.remove(), 500);
-                        }
-                    }
+    <% if (messages.success) { %>
+        <div class="alert alert-success" id="alert-success">
+            <span>✓ <%= messages.success %></span>
+            <button type="button" class="alert-close" aria-label="Close"
+                onclick="closeAlert('alert-success')">✕</button>
+        </div>
+        <% } %>
+            <% if (messages.error) { %>
+                <div class="alert alert-error" id="alert-error">
+                    <span>⚠ <%= messages.error %></span>
+                    <button type="button" class="alert-close" aria-label="Close"
+                        onclick="closeAlert('alert-error')">✕</button>
+                </div>
+                <% } %>
 
-                    document.addEventListener('DOMContentLoaded', () => {
-                        ['alert-success', 'alert-error'].forEach(id => {
+                    <script>
+                        function closeAlert(id) {
                             const el = document.getElementById(id);
                             if (el) {
-                                setTimeout(() => closeAlert(id), 5000);
+                                el.style.opacity = '0';
+                                el.style.transform = 'translateY(8px)';
+                                setTimeout(() => el.remove(), 450);
                             }
+                        }
+                        document.addEventListener('DOMContentLoaded', () => {
+                            ['alert-success', 'alert-error'].forEach(id => {
+                                const el = document.getElementById(id);
+                                if (el) setTimeout(() => closeAlert(id), 5000);
+                            });
                         });
-                    });
-                </script>
+                    </script>

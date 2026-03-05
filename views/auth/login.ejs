@@ -1,22 +1,34 @@
 <%- include('../layout/base', { pageTitle: 'Login' }) %>
     <%- include('../layout/header') %>
 
-        <div class="container">
-            <div class="card" style="max-width: 400px; margin: 2rem auto;">
-                <h1>Login</h1>
-                <form action="/login" method="POST">
+        <div class="container-sm" style="padding-top: 3rem; padding-bottom: 4rem;">
+            <div class="text-center mb-md fade-in-up">
+                <span class="section-label">Welcome back</span>
+                <h1 style="font-size: 2rem; font-weight: 900; letter-spacing: -0.5px;">Sign In to ReelTrack</h1>
+                <p class="text-muted text-sm mt-sm">Track films, write reviews, build your watchlist.</p>
+            </div>
+
+            <div class="card fade-in-up" style="animation-delay: 0.1s; max-width: 420px; margin: 0 auto;">
+                <form action="/login" method="POST" id="login-form">
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 0.5rem;"
+                        id="login-submit">
+                        Sign In →
+                    </button>
                 </form>
-                <p style="margin-top: 1rem; text-align: center;">
-                    Don't have an account? <a href="/register">Register</a>
+
+                <div class="divider"></div>
+
+                <p class="text-center text-sm text-muted">
+                    No account yet? <a href="/register" style="color: var(--primary); font-weight: 600;">Create one
+                        free</a>
                 </p>
             </div>
         </div>

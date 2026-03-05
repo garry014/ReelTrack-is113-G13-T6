@@ -1,34 +1,72 @@
-<h1>My Watchlist</h1>
-<a href="/watchlist/new">Add Movie</a>
+<%- include('../layout/base', { pageTitle: 'My Watchlist' }) %>
+  <%- include('../layout/header') %>
 
-<table>
-  <tr>
-    <th>Movie ID</th>
-    <th>Status</th>
-    <th>Notes</th>
-    <th>Added</th>
-    <th>Actions</th>
-  </tr>
-  <% watchlist.forEach(item=> { %>
-    <tr>
-      <td>
-        <%= item.movieId %>
-      </td>
-      <td>
-        <%= item.status.replace('_', ' ' ).toUpperCase() %>
-      </td>
-      <td>
-        <%= item.notes || '-' %>
-      </td>
-      <td>
-        <%= item.addedAt.toDateString() %>
-      </td>
-      <td>
-        <a href="/watchlist/<%= item._id %>/edit">Edit</a>
-        <form action="/watchlist/<%= item._id %>/delete" method="POST" style="display:inline">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-        </form>
-      </td>
-    </tr>
-    <% }) %>
-</table>
+    <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+      <div class="flex-between mb-md fade-in-up">
+        <div>
+          <span class="section-label">Your Library</span>
+          <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">My Watchlist</h1>
+        </div>
+        <a href="/watchlist/new" class="btn btn-primary" id="add-to-watchlist">＋ Add Movie</a>
+      </div>
+
+      <% if (!watchlist || watchlist.length===0) { %>
+        <div class="empty-state card">
+          <div class="empty-icon">🎞</div>
+          <h3>Your watchlist is empty</h3>
+          <p>Start adding movies you want to track.</p>
+          <a href="/movies" class="btn btn-primary mt-sm">Browse Movies</a>
+        </div>
+        <% } else { %>
+          <div class="table-wrapper fade-in-up" style="animation-delay: 0.1s;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Movie</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th>Added</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% watchlist.forEach(item=> { %>
+                  <tr>
+                    <td style="font-weight: 600;">
+                      <%= item.movieId %>
+                    </td>
+                    <td>
+                      <% const statusMap={ want_to_watch: { label: 'Want to Watch' , cls: 'badge-blue' }, watching: {
+                        label: 'Watching' , cls: 'badge-gold' }, watched: { label: 'Watched' , cls: 'badge-green' } };
+                        %>
+                        <% const s=statusMap[item.status] || { label: item.status, cls: '' }; %>
+                          <span class="badge <%= s.cls %>">
+                            <%= s.label %>
+                          </span>
+                    </td>
+                    <td class="text-muted text-sm">
+                      <%= item.notes || '—' %>
+                    </td>
+                    <td class="text-muted text-sm">
+                      <%= item.addedAt.toDateString() %>
+                    </td>
+                    <td>
+                      <div style="display: flex; gap: 0.5rem;">
+                        <a href="/watchlist/<%= item._id %>/edit" class="btn btn-ghost btn-sm"
+                          id="edit-watchlist-<%= item._id %>">✎ Edit</a>
+                        <form action="/watchlist/<%= item._id %>/delete" method="POST" style="display:inline;">
+                          <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Remove this movie from your watchlist?')"
+                            id="delete-watchlist-<%= item._id %>">✕</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <% } %>
+    </div>
+
+    <%- include('../layout/footer') %>

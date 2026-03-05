@@ -1,60 +1,81 @@
 <%- include('../layout/base', { pageTitle: 'Reviews' , extraCSS: ['/css/review.css'] }) %>
     <%- include('../layout/header') %>
 
-        <div class="container">
-            <!-- Movie Header Info -->
-            <div class="movie-header">
-                <h1>Reviews</h1>
+        <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
 
-                <div class="overall-rating">
-                    <% if(averageRating.totalReviews> 0) { %>
-                        Average Rating:
-                        <span class="stars">★ <%= averageRating.averageRating %> / 5</span>
-                        <br>
-                        <i style="font-size: 14px;">based on <%= averageRating.totalReviews %> review(s)</i>
-                        <% } else { %>
-                            <p>No reviews yet</p>
-                            <% } %>
+            <!-- Header -->
+            <div class="reviews-header">
+                <div>
+                    <span class="section-label">Movie Reviews</span>
+                    <h1>Reviews</h1>
+                    <% if (currentUser && !hasReviewed) { %>
+                        <a href="/reviews/new/<%= MOVIE_ID %>" class="btn btn-primary mt-sm" id="write-review-btn">✍
+                            Write a Review</a>
+                        <% } else if (currentUser && hasReviewed) { %>
+                            <p class="review-cta-notice mt-sm">✓ You've already reviewed this movie.</p>
+                            <% } else { %>
+                                <p class="text-muted text-sm mt-sm"><a href="/login">Log in</a> to write a review.</p>
+                                <% } %>
                 </div>
 
-                <% if (currentUser && !hasReviewed) { %>
-                    <a href="/reviews/new/<%= MOVIE_ID %>" class="btn btn-primary">Write a Review</a>
-                    <% } else if (currentUser && hasReviewed) { %>
-                        <p style="color: var(--text-light);"><i>You have already reviewed this movie.</i></p>
-                        <% } else { %>
-                            <p><a href="/login" style="color: var(--primary-color);">Log in</a> to write a review.</p>
-                            <% } %>
+                <% if (averageRating.totalReviews> 0) { %>
+                    <div class="overall-rating-box">
+                        <div class="stars-big">★</div>
+                        <div class="rating-number">
+                            <%= averageRating.averageRating %><span
+                                    style="font-size: 1rem; font-weight: 500; color: var(--text-muted);"> / 5</span>
+                        </div>
+                        <div class="rating-count">Based on <%= averageRating.totalReviews %> review<%=
+                                    averageRating.totalReviews> 1 ? 's' : '' %></div>
+                    </div>
+                    <% } else { %>
+                        <div class="overall-rating-box">
+                            <div class="stars-big" style="opacity: 0.3;">★</div>
+                            <div class="rating-count" style="margin-top: 0.5rem;">No ratings yet</div>
+                        </div>
+                        <% } %>
             </div>
 
-            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border-color);">
+            <div class="divider"></div>
 
             <!-- Reviews List -->
             <div class="reviews-list">
                 <% if (reviews.length===0) { %>
-                    <div class="card" style="text-align: center; padding: 3rem;">
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
                         <h3>No reviews yet</h3>
-                        <p style="color: var(--text-light); margin-top: 0.5rem;">Be the first to review this movie!</p>
+                        <p>Be the first to share your thoughts about this film!</p>
+                        <% if (currentUser && !hasReviewed) { %>
+                            <a href="/reviews/new/<%= MOVIE_ID %>" class="btn btn-primary" id="write-first-review">Write
+                                the first review</a>
+                            <% } %>
                     </div>
                     <% } else { %>
                         <% reviews.forEach(review=> { %>
-                            <div class="card review-card">
+                            <div class="review-card">
                                 <div class="review-header">
                                     <div class="reviewer-info">
-                                        <strong>
-                                            <% if(review.isAnonymous) { %>
-                                                Anonymous
-                                                <% } else { %>
-                                                    <%= review.owner.name %>
+                                        <div class="reviewer-avatar">
+                                            <% if (review.isAnonymous) { %>?<% } else { %>
+                                                    <%= review.owner.name.charAt(0).toUpperCase() %>
                                                         <% } %>
-                                        </strong>
-                                        <span class="review-date">
-                                            <%= new Date(review.createdAt).toLocaleDateString() %>
-                                                <% if (review.edited) { %>
-                                                    <small class="text-muted">(Edited)</small>
-                                                    <% } %>
-                                        </span>
+                                        </div>
+                                        <div>
+                                            <strong>
+                                                <% if (review.isAnonymous) { %>Anonymous<% } else { %>
+                                                        <%= review.owner.name %>
+                                                            <% } %>
+                                            </strong>
+                                            <span class="review-date">
+                                                <%= new Date(review.createdAt).toLocaleDateString('en-US', {
+                                                    year: 'numeric' , month: 'short' , day: 'numeric' }) %>
+                                                    <% if (review.edited) { %><small class="text-muted"> ·
+                                                            Edited</small>
+                                                        <% } %>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div class="review-rating">★ <%= review.rating %> / 5</div>
+                                    <div class="review-rating-badge">★ <%= review.rating %> / 5</div>
                                 </div>
 
                                 <div class="review-body">
@@ -63,14 +84,15 @@
                                     </p>
                                 </div>
 
-                                <!-- Review Actions (Edit/Delete) if the review is written by the logged-in user -->
                                 <% if (currentUser && currentUser._id.toString()===review.owner._id.toString()) { %>
                                     <div class="review-actions">
-                                        <a href="/reviews/<%= review._id %>" class="btn btn-secondary btn-sm">Edit</a>
+                                        <a href="/reviews/<%= review._id %>" class="btn btn-ghost btn-sm"
+                                            id="edit-review-<%= review._id %>">✎ Edit</a>
                                         <form action="/reviews/<%= review._id %>?_method=DELETE" method="POST"
                                             style="display:inline;">
                                             <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you sure you want to delete this review?')">Delete</button>
+                                                onclick="return confirm('Delete this review? This cannot be undone.')"
+                                                id="delete-review-<%= review._id %>">✕ Delete</button>
                                         </form>
                                     </div>
                                     <% } %>
@@ -79,14 +101,14 @@
                                 <% } %>
             </div>
 
-            <!-- Pagination Controls -->
+            <!-- Pagination -->
             <% if (totalPages> 1) { %>
-                <nav class="pagination">
+                <nav class="pagination" aria-label="Reviews pagination">
                     <% if (currentPage> 1) { %>
-                        <a href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage - 1 %>&limit=<%= limit %>">&laquo;
+                        <a href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage - 1 %>&limit=<%= limit %>">‹
                             Prev</a>
                         <% } else { %>
-                            <span class="disabled">&laquo; Prev</span>
+                            <span class="disabled">‹ Prev</span>
                             <% } %>
 
                                 <% for (let i=1; i <=totalPages; i++) { %>
@@ -104,9 +126,9 @@
                                                     <% if (currentPage < totalPages) { %>
                                                         <a
                                                             href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next
-                                                            &raquo;</a>
+                                                            ›</a>
                                                         <% } else { %>
-                                                            <span class="disabled">Next &raquo;</span>
+                                                            <span class="disabled">Next ›</span>
                                                             <% } %>
                 </nav>
                 <% } %>

@@ -1,26 +1,38 @@
 <%- include('../layout/base', { pageTitle: 'Register' }) %>
     <%- include('../layout/header') %>
 
-        <div class="container">
-            <div class="card" style="max-width: 400px; margin: 2rem auto;">
-                <h1>Register</h1>
-                <form action="/register" method="POST">
+        <div class="container-sm" style="padding-top: 3rem; padding-bottom: 4rem;">
+            <div class="text-center mb-md fade-in-up">
+                <span class="section-label">Join ReelTrack</span>
+                <h1 style="font-size: 2rem; font-weight: 900; letter-spacing: -0.5px;">Create Your Account</h1>
+                <p class="text-muted text-sm mt-sm">Your personal movie companion — free forever.</p>
+            </div>
+
+            <div class="card fade-in-up" style="animation-delay: 0.1s; max-width: 420px; margin: 0 auto;">
+                <form action="/register" method="POST" id="register-form">
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" required>
+                        <label for="name">Full name</label>
+                        <input type="text" id="name" name="name" placeholder="Jane Doe" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" name="password" placeholder="Min. 8 characters" required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 0.5rem;"
+                        id="register-submit">
+                        Get Started →
+                    </button>
                 </form>
-                <p style="margin-top: 1rem; text-align: center;">
-                    Already have an account? <a href="/login">Login</a>
+
+                <div class="divider"></div>
+
+                <p class="text-center text-sm text-muted">
+                    Already have an account? <a href="/login" style="color: var(--primary); font-weight: 600;">Sign
+                        in</a>
                 </p>
             </div>
         </div>

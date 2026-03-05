@@ -1,11 +1,19 @@
 <%- include('../layout/base', { pageTitle: 'Edit ' + movie.title, extraJS: ['/js/movieEdit.js'] }) %>
     <%- include('../layout/header') %>
 
-        <div class="container">
-            <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <h1>Edit Movie</h1>
+        <div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+            <div class="mb-md fade-in-up">
+                <span class="section-label">Admin</span>
+                <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Edit Movie</h1>
+                <p class="text-muted text-sm mt-sm">Update the details for <strong style="color: var(--text);">
+                        <%= movie.title %>
+                    </strong>.</p>
+            </div>
+
+            <div class="card fade-in-up" style="animation-delay: 0.1s;">
                 <form id="editMovieForm">
-                    <input type="hidden" id="movieid" value="<%=movie._id %>">
+                    <input type="hidden" id="movieid" value="<%= movie._id %>">
+
                     <div class="form-group">
                         <label for="title">Title</label>
                         <input type="text" id="title" name="title" value="<%= movie.title %>" required>
@@ -14,17 +22,15 @@
                         <label for="director">Director</label>
                         <input type="text" id="director" name="director" value="<%= movie.director %>" required>
                     </div>
-                    <div class="form-group">
-                        <label for="year">Release Year</label>
-                        <input type="number" id="year" name="year" value="<%= movie.releaseYear %>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="poster">Poster URL</label>
-                        <input type="url" id="poster" name="poster" value="<%= movie.posterUrl %>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="duration">Duration in mins (3 digits)</label>
-                        <input type="number" id="duration" name="duration" value="<%= movie.duration %>" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="year">Release Year</label>
+                            <input type="number" id="year" name="year" value="<%= movie.releaseYear %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (mins)</label>
+                            <input type="number" id="duration" name="duration" value="<%= movie.duration %>" required>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="genre">Genre</label>
@@ -37,10 +43,18 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="poster">Poster URL</label>
+                        <input type="url" id="poster" name="poster" value="<%= movie.posterUrl %>" required>
+                    </div>
+                    <div class="form-group">
                         <label for="synopsis">Synopsis</label>
                         <textarea id="synopsis" name="synopsis" rows="5" required><%= movie.synopsis %></textarea>
                     </div>
-                    <button type="submit" class="btn btn-warning">Update Movie</button>
+
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 0.5rem;">
+                        <a href="/movies/<%= movie._id %>" class="btn btn-ghost" id="cancel-edit">Cancel</a>
+                        <button type="submit" class="btn btn-warning" id="update-movie">✎ Update Movie</button>
+                    </div>
                 </form>
             </div>
         </div>

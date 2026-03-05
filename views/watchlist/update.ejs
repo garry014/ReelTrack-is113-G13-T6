@@ -1,13 +1,39 @@
-<h1>Update <%= movieId %>
-</h1>
-<form action="/watchlist/<%= item._id %>" method="POST">
-  <label>Status:
-    <select name="status">
-      <option value="want_to_watch" <%=item.status==='want_to_watch' ? 'selected' : '' %>>Want to Watch</option>
-      <option value="watching" <%=item.status==='watching' ? 'selected' : '' %>>Watching</option>
-      <option value="watched" <%=item.status==='watched' ? 'selected' : '' %>>Watched</option>
-    </select>
-  </label>
-  <p><label>Notes: <textarea name="notes"><%= item.notes %></textarea></label></p>
-  <button type="submit" class="btn btn-warning">Update</button>
-</form>
+<%- include('../layout/base', { pageTitle: 'Update Watchlist' }) %>
+  <%- include('../layout/header') %>
+
+    <div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+      <div class="mb-md fade-in-up">
+        <span class="section-label">Watchlist</span>
+        <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Update Entry</h1>
+        <p class="text-muted text-sm mt-sm">Update your watchlist status for <strong style="color: var(--text);">
+            <%= movieId %>
+          </strong>.</p>
+      </div>
+
+      <div class="card fade-in-up" style="animation-delay: 0.1s;">
+        <form action="/watchlist/<%= item._id %>" method="POST" id="update-watchlist-form">
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+              <option value="want_to_watch" <%=item.status==='want_to_watch' ? 'selected' : '' %>>🕐 Want to Watch
+              </option>
+              <option value="watching" <%=item.status==='watching' ? 'selected' : '' %>>▶ Watching</option>
+              <option value="watched" <%=item.status==='watched' ? 'selected' : '' %>>✓ Watched</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes <span style="font-weight: 400; color: var(--text-muted);">(optional)</span></label>
+            <textarea id="notes" name="notes" rows="3"><%= item.notes %></textarea>
+          </div>
+
+          <div class="divider"></div>
+
+          <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+            <a href="/watchlist" class="btn btn-ghost" id="cancel-update">Cancel</a>
+            <button type="submit" class="btn btn-warning" id="submit-update">✎ Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <%- include('../layout/footer') %>

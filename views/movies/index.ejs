@@ -1,22 +1,36 @@
 <%- include('../layout/base', { pageTitle: 'All Movies' }) %>
     <%- include('../layout/header') %>
 
-        <section class="movies">
-            <h2>All Movies</h2>
-            <hr style="border-color: #ff2424;">
-            <div class="movies-container">
-                <% allMovies.forEach((movie)=> { %>
-                    <a href="/movies/<%= movie._id %>" class="movie-card">
-                        <img src=<%=movie.posterUrl %> />
-                        <p>
-                            <%= movie.title %>
-                        </p>
-                        <span>
-                            <%=movie.duration %> mins
-                        </span>
-                    </a>
-                    <% }) %>
-            </div>
-        </section>
+        <div class="container">
+            <section class="movies-section">
+                <span class="section-label">Browse</span>
+                <h2>All Movies</h2>
+                <div class="section-divider"></div>
+
+                <% if (allMovies.length===0) { %>
+                    <div class="empty-state">
+                        <div class="empty-icon">🎬</div>
+                        <h3>No movies yet</h3>
+                        <p>The catalogue is empty. Check back soon.</p>
+                    </div>
+                    <% } else { %>
+                        <div class="movies-container">
+                            <% allMovies.forEach((movie)=> { %>
+                                <a href="/movies/<%= movie._id %>" class="movie-card" id="movie-<%= movie._id %>">
+                                    <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster" loading="lazy">
+                                    <div class="movie-card-info">
+                                        <p class="movie-card-title">
+                                            <%= movie.title %>
+                                        </p>
+                                        <p class="movie-card-meta">
+                                            <%= movie.duration %> mins · <%= movie.genre %>
+                                        </p>
+                                    </div>
+                                </a>
+                                <% }) %>
+                        </div>
+                        <% } %>
+            </section>
+        </div>
 
         <%- include('../layout/footer') %>

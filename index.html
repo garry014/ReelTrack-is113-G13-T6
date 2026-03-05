@@ -4,93 +4,1014 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - ReelTrack</title>
+    <title>ReelTrack — Track Every Frame</title>
+    <meta name="description"
+        content="ReelTrack is your personal movie companion. Browse films, track your watchlist, write reviews, explore genres, and join the discussion — all in one place.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg: #f8fafc;
-            --text: #1e293b;
+            --primary: #e50914;
+            --primary-dark: #b81d24;
+            --primary-glow: rgba(229, 9, 20, 0.3);
+            --accent: #f5c518;
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-glass: rgba(18, 18, 26, 0.7);
+            --text: #f1f1f1;
+            --text-muted: #8b8b9e;
+            --border: rgba(255, 255, 255, 0.08);
             --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── BACKGROUND FILM GRAIN ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 5%;
+            background: linear-gradient(to bottom, rgba(10, 10, 15, 0.95) 0%, transparent 100%);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--primary);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0;
-            color: var(--text);
+            font-size: 1.1rem;
         }
 
-        .hero {
-            background: var(--white);
-            padding: 4rem;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.1);
-            text-align: center;
-            max-width: 600px;
+        .nav-logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.5px;
         }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .nav-logo-text span {
             color: var(--primary);
         }
 
-        p {
-            font-size: 1.25rem;
-            color: #64748b;
-            margin-bottom: 2rem;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
         }
 
-        .cta-group {
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-cta {
             display: flex;
-            gap: 1rem;
-            justify-content: center;
+            gap: 0.75rem;
         }
 
         .btn {
-            padding: 1rem 2rem;
-            border-radius: 12px;
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            transition: transform 0.2s, background 0.2s;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--white);
         }
 
         .btn-primary {
             background: var(--primary);
-            color: white;
+            color: var(--white);
+            box-shadow: 0 0 20px var(--primary-glow);
         }
 
         .btn-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+            box-shadow: 0 0 30px var(--primary-glow);
         }
 
-        .btn-secondary {
-            background: #f1f5f9;
-            color: var(--text);
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 5% 5rem;
+            overflow: hidden;
         }
 
-        .btn-secondary:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
+        /* Cinematic radial glow */
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(229, 9, 20, 0.12) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%);
+            pointer-events: none;
+            animation: pulse 6s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: translate(-50%, -60%) scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -60%) scale(1.1);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(229, 9, 20, 0.12);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            color: #ff6b6b;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease both;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 9vw, 7rem);
+            font-weight: 900;
+            line-height: 1.0;
+            letter-spacing: -3px;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+
+        .hero-title em {
+            font-style: normal;
+            color: var(--primary);
+            display: block;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 560px;
+            margin: 0 auto 2.5rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .hero-cta .btn {
+            padding: 0.85rem 2rem;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        .hero-scroll-hint {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            animation: fadeIn 1s ease 1s both;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+            animation: scrollLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollLine {
+
+            0%,
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scaleY(0.5);
+                opacity: 0.4;
+            }
+        }
+
+        /* ── FILM STRIP DIVIDER ── */
+        .filmstrip {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 0.5rem 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filmstrip-track {
+            display: flex;
+            gap: 0;
+            animation: scrollLeft 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        .filmstrip-item {
+            padding: 0.6rem 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-right: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .filmstrip-item span {
+            color: var(--primary);
+        }
+
+        @keyframes scrollLeft {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ── SECTION ── */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 5%;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 560px;
+        }
+
+        .section-header {
+            margin-bottom: 3.5rem;
+        }
+
+        /* ── FEATURE GRID ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: linear-gradient(135deg, transparent 60%, var(--card-accent, rgba(229, 9, 20, 0.05)) 100%);
+            pointer-events: none;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(229, 9, 20, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(229, 9, 20, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1.25rem;
+            display: block;
+        }
+
+        .feature-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            margin-bottom: 1rem;
+        }
+
+        .tag-red {
+            background: rgba(229, 9, 20, 0.15);
+            color: #ff6b6b;
+        }
+
+        .tag-blue {
+            background: rgba(37, 99, 235, 0.15);
+            color: #60a5fa;
+        }
+
+        .tag-gold {
+            background: rgba(245, 197, 24, 0.15);
+            color: #fbbf24;
+        }
+
+        .tag-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .tag-purple {
+            background: rgba(139, 92, 246, 0.15);
+            color: #a78bfa;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-ops {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .op-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .op-c {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .op-r {
+            background: rgba(37, 99, 235, 0.15);
+            color: #60a5fa;
+        }
+
+        .op-u {
+            background: rgba(245, 197, 24, 0.15);
+            color: #fbbf24;
+        }
+
+        .op-d {
+            background: rgba(229, 9, 20, 0.15);
+            color: #f87171;
+        }
+
+        .feature-author {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .author-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* ── STATS BAR ── */
+        .stats-section {
+            padding: 4rem 5%;
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.05) 0%, rgba(10, 10, 15, 0) 100%);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--white);
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .stat-number em {
+            font-style: normal;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── HOW IT WORKS ── */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .step-number {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(229, 9, 20, 0.1);
+            border: 2px solid rgba(229, 9, 20, 0.3);
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+        }
+
+        .step-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-desc {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            text-align: center;
+            padding: 6rem 5%;
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.08) 0%, rgba(124, 58, 237, 0.05) 100%);
+            border-top: 1px solid var(--border);
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-muted);
+            max-width: 480px;
+            margin: 0 auto 2.5rem;
+            font-size: 1.05rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-buttons .btn {
+            padding: 0.9rem 2.2rem;
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 2.5rem 5%;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-logo {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .footer-logo span {
+            color: var(--primary);
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ── INTERSECTION OBSERVER CLASSES ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                letter-spacing: -2px;
+            }
+
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="hero">
-        <h1>ReelTrack</h1>
-        <p>A place to share your love for movies</p>
-        <div class="cta-group">
-            <a href="/movies" class="btn btn-primary">Browse Movies</a>
-            <a href="/login" class="btn btn-secondary">Login</a>
+
+    <!-- ── NAV ── -->
+    <nav>
+        <a href="/" class="nav-logo" aria-label="ReelTrack Home">
+            <div class="nav-logo-icon">🎬</div>
+            <span class="nav-logo-text">Reel<span>Track</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="/movies">Movies</a>
+            <a href="/movies">Watchlist</a>
+            <a href="/movies">Reviews</a>
+            <a href="/movies">Genres</a>
+        </div>
+        <div class="nav-cta">
+            <a href="/login" class="btn btn-ghost" id="nav-login">Login</a>
+            <a href="/register" class="btn btn-primary" id="nav-register">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+        <h1 class="hero-title">
+            Your Cinema.<br>
+            <em>Your Story.</em>
+        </h1>
+        <p class="hero-subtitle">
+            Browse movies, curate your watchlist, write reviews, discover genres, and spark conversations — all in one
+            cinematic platform.
+        </p>
+        <div class="hero-cta">
+            <a href="/movies" class="btn btn-primary" id="hero-browse">
+                🎬 Browse Movies
+            </a>
+            <a href="/register" class="btn btn-ghost" id="hero-join">
+                Join for Free
+            </a>
+        </div>
+        <div class="hero-scroll-hint">
+            <span>Explore</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ── FILM STRIP ── -->
+    <div class="filmstrip" aria-hidden="true">
+        <div class="filmstrip-track">
+            <div class="filmstrip-item">🎬 Movie Management</div>
+            <div class="filmstrip-item">📋 <span>Watchlist</span></div>
+            <div class="filmstrip-item">⭐ Reviews & Ratings</div>
+            <div class="filmstrip-item">🏷️ <span>Genre Browser</span></div>
+            <div class="filmstrip-item">💬 Discussions</div>
+            <div class="filmstrip-item">🔒 Role-Based Access</div>
+            <div class="filmstrip-item">🎬 Movie Management</div>
+            <div class="filmstrip-item">📋 <span>Watchlist</span></div>
+            <div class="filmstrip-item">⭐ Reviews & Ratings</div>
+            <div class="filmstrip-item">🏷️ <span>Genre Browser</span></div>
+            <div class="filmstrip-item">💬 Discussions</div>
+            <div class="filmstrip-item">🔒 Role-Based Access</div>
         </div>
     </div>
+
+    <!-- ── FEATURES ── -->
+    <section id="features">
+        <div class="section-header reveal">
+            <div class="section-label">Platform Features</div>
+            <h2 class="section-title">Everything You Need<br>for Movie Lovers</h2>
+            <p class="section-desc">A full CRUD platform built by 5 team members, each owning a complete feature
+                end-to-end.</p>
+        </div>
+
+        <div class="features-grid">
+
+            <!-- Movie Management -->
+            <div class="feature-card reveal" style="--card-accent: rgba(229,9,20,0.08)">
+                <span class="feature-icon">🎬</span>
+                <div class="feature-tag tag-red">Movies</div>
+                <h3 class="feature-title">Movie Management</h3>
+                <p class="feature-desc">The core catalog. Browse all films, view detailed info, and let admins curate
+                    the collection with full create, edit, and delete control.</p>
+                <div class="feature-ops">
+                    <span class="op-badge op-c">Create</span>
+                    <span class="op-badge op-r">Browse</span>
+                    <span class="op-badge op-u">Edit</span>
+                    <span class="op-badge op-d">Delete</span>
+                </div>
+                <div class="feature-author">
+                    <div class="author-avatar">A</div>
+                    <span>Admin-only write access · title, genre, director, posterUrl</span>
+                </div>
+            </div>
+
+            <!-- Watchlist -->
+            <div class="feature-card reveal" style="--card-accent: rgba(37,99,235,0.08)">
+                <span class="feature-icon">📋</span>
+                <div class="feature-tag tag-blue">Watchlist</div>
+                <h3 class="feature-title">Watchlist Management</h3>
+                <p class="feature-desc">Add any movie to your personal queue and track progress from "Want to Watch" all
+                    the way through "Watched" — with private notes.</p>
+                <div class="feature-ops">
+                    <span class="op-badge op-c">Add</span>
+                    <span class="op-badge op-r">View Own</span>
+                    <span class="op-badge op-u">Update Status</span>
+                    <span class="op-badge op-d">Remove</span>
+                </div>
+                <div class="feature-author">
+                    <div class="author-avatar">J</div>
+                    <span>Jessie · owner, movieId, status, notes</span>
+                </div>
+            </div>
+
+            <!-- Reviews -->
+            <div class="feature-card reveal" style="--card-accent: rgba(245,197,24,0.08)">
+                <span class="feature-icon">⭐</span>
+                <div class="feature-tag tag-gold">Reviews</div>
+                <h3 class="feature-title">Review & Rating System</h3>
+                <p class="feature-desc">Rate and review any movie. One review per user per movie — edit any time, or
+                    delete your own. See the community verdict at a glance.</p>
+                <div class="feature-ops">
+                    <span class="op-badge op-c">Submit</span>
+                    <span class="op-badge op-r">View All</span>
+                    <span class="op-badge op-u">Edit Own</span>
+                    <span class="op-badge op-d">Delete Own</span>
+                </div>
+                <div class="feature-author">
+                    <div class="author-avatar">G</div>
+                    <span>Gary · rating, reviewText, 1 review per movie</span>
+                </div>
+            </div>
+
+            <!-- Genre -->
+            <div class="feature-card reveal" style="--card-accent: rgba(16,185,129,0.08)">
+                <span class="feature-icon">🏷️</span>
+                <div class="feature-tag tag-green">Genres</div>
+                <h3 class="feature-title">Genre / Category Browser</h3>
+                <p class="feature-desc">Discover movies by genre. Admins manage the taxonomy — create, rename, or retire
+                    categories to keep the library well-organised.</p>
+                <div class="feature-ops">
+                    <span class="op-badge op-c">Create</span>
+                    <span class="op-badge op-r">List & Filter</span>
+                    <span class="op-badge op-u">Edit</span>
+                    <span class="op-badge op-d">Remove</span>
+                </div>
+                <div class="feature-author">
+                    <div class="author-avatar">B</div>
+                    <span>Bryan · name, description, isActive, createdBy</span>
+                </div>
+            </div>
+
+            <!-- Comments -->
+            <div class="feature-card reveal" style="--card-accent: rgba(139,92,246,0.08)">
+                <span class="feature-icon">💬</span>
+                <div class="feature-tag tag-purple">Discussions</div>
+                <h3 class="feature-title">Watchlist Comments</h3>
+                <p class="feature-desc">Post thoughts on any movie's page, reply to others with threaded comments, and
+                    keep the conversation going long after the credits roll.</p>
+                <div class="feature-ops">
+                    <span class="op-badge op-c">Post</span>
+                    <span class="op-badge op-r">View Thread</span>
+                    <span class="op-badge op-u">Edit Own</span>
+                    <span class="op-badge op-d">Delete Own</span>
+                </div>
+                <div class="feature-author">
+                    <div class="author-avatar">S</div>
+                    <span>Sungwon · commentText, parentCommentId (threaded)</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── HOW IT WORKS ── -->
+    <section id="how-it-works" style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--border);">
+        <div class="section-header reveal" style="text-align: center;">
+            <div class="section-label">How It Works</div>
+            <h2 class="section-title">Get Started in Minutes</h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card reveal">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Create an Account</h3>
+                <p class="step-desc">Sign up for free and get instant access to the full movie catalog.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Browse & Discover</h3>
+                <p class="step-desc">Explore movies by genre, search by title, or check the trending list.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Build Your Watchlist</h3>
+                <p class="step-desc">Add films to your personal queue and track your progress over time.</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Review & Discuss</h3>
+                <p class="step-desc">Write a review, rate movies, and join the community discussion.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA ── -->
+    <section class="cta-section">
+        <h2 class="reveal">Ready to Start<br><em style="font-style:normal; color:var(--primary)">Tracking?</em></h2>
+        <p class="reveal">Join ReelTrack today and never lose track of what to watch next.</p>
+        <div class="cta-buttons reveal">
+            <a href="/register" class="btn btn-primary" id="cta-register">🍿 Create Free Account</a>
+            <a href="/movies" class="btn btn-ghost" id="cta-browse">Browse Movies</a>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-logo">Reel<span>Track</span></div>
+        <div class="footer-text">IS113 Group 13 · Team 6 &mdash; Built with Node.js, EJS &amp; MongoDB</div>
+        <div class="footer-links">
+            <a href="/movies">Movies</a>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll reveal
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    // Stagger cards within the same parent
+                    const siblings = [...entry.target.parentElement.querySelectorAll('.reveal')];
+                    const idx = siblings.indexOf(entry.target);
+                    entry.target.style.transitionDelay = `${idx * 0.08}s`;
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        revealEls.forEach(el => observer.observe(el));
+    </script>
+
 </body>
 
 </html>

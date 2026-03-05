@@ -1,36 +1,55 @@
 <%- include('./layout/base', { pageTitle: 'My Profile' }) %>
     <%- include('./layout/header') %>
 
-        <div class="container">
-            <div class="card">
-                <h1>My Profile</h1>
-                <p><strong>Name:</strong>
-                    <%= user.name %>
-                </p>
-                <p><strong>Email:</strong>
-                    <%= user.email %>
-                </p>
-                <p><strong>Joined:</strong>
-                    <%= user.createdAt.toDateString() %>
-                </p>
+        <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+
+            <!-- Profile Card -->
+            <div class="card fade-in-up" style="max-width: 560px; margin-bottom: 2.5rem;">
+                <div style="display: flex; align-items: center; gap: 1.25rem;">
+                    <div
+                        style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: white; flex-shrink: 0;">
+                        <%= user.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <div>
+                        <span class="section-label" style="margin-bottom: 0.1rem;">Profile</span>
+                        <h1 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 0;">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-muted text-sm">
+                            <%= user.email %>
+                        </p>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <p class="text-muted text-sm">Member since <strong style="color: var(--text)">
+                        <%= user.createdAt.toDateString() %>
+                    </strong></p>
             </div>
 
-            <h2>My Items</h2>
-            <div class="item-grid">
-                <% items.forEach(item=> { %>
-                    <div class="card item-card">
-                        <span class="badge">
-                            <%= item.category %>
-                        </span>
-                        <h3>
-                            <%= item.title %>
-                        </h3>
-                        <p class="price">$<%= item.price %>
-                        </p>
-                        <a href="/items/<%= item._id %>">View Item</a>
+            <!-- Items (if any) -->
+            <% if (typeof items !=='undefined' && items.length> 0) { %>
+                <div class="fade-in-up" style="animation-delay: 0.1s;">
+                    <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">My Items</h2>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
+                        <% items.forEach(item=> { %>
+                            <div class="card" style="padding: 1.25rem;">
+                                <span class="badge badge-blue mb-sm">
+                                    <%= item.category %>
+                                </span>
+                                <h3 style="font-size: 1rem; margin-bottom: 0.3rem;">
+                                    <%= item.title %>
+                                </h3>
+                                <p class="text-gold"
+                                    style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">$<%= item.price
+                                        %>
+                                </p>
+                                <a href="/items/<%= item._id %>" class="btn btn-ghost btn-sm">View Item →</a>
+                            </div>
+                            <% }) %>
                     </div>
-                    <% }) %>
-            </div>
+                </div>
+                <% } %>
         </div>
 
         <%- include('./layout/footer') %>
