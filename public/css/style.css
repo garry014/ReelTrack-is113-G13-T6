@@ -24,9 +24,9 @@ body {
     line-height: 1.6;
 }
 
-header{
+header {
     position: sticky;
-    top:0;
+    top: 0;
     width: 100%;
     padding: 15px 150px;
     background: grey;
@@ -35,28 +35,22 @@ header{
     align-items: center;
 }
 
-nav{
+nav {
     display: flex;
     gap: 30px;
     align-items: center;
+    z-index: 999;
 }
 
-nav a{
+header a {
     color: white;
     text-decoration: none;
     transition: 0.4s all linear;
 }
 
-nav a:hover{
-    color:rgb(0, 255, 255);
-    scale: 1.5;
-    rotate: 360deg
-}
-
-.btn{
-    background-color: #ff2424;
-    padding: 5px 10px;
-    border-radius: 0.5rem
+nav a:hover {
+    color: rgb(0, 255, 255);
+    scale: 1.25;
 }
 
 .container {
@@ -74,38 +68,38 @@ nav a:hover{
     color: var(--bg);
 }
 
-.movies{
+.movies {
     max-width: 1000px;
     margin: auto;
     margin-top: 20px;
 }
 
-.movies-container{
+.movies-container {
     margin-top: 2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px,auto));
+    grid-template-columns: repeat(auto-fit, minmax(180px, auto));
     gap: 1rem;
 }
 
-.movies-container .movie-card{
+.movies-container .movie-card {
     width: 100%;
     text-decoration: none;
     color: white;
     transition: 0.4s all linear;
 }
 
-.movies-container .movie-card img{
+.movies-container .movie-card img {
     width: 100%;
     height: 85%;
 }
 
-.movies-container .movie-card p{
+.movies-container .movie-card p {
     white-space: nowrap;
-    overflow:hidden;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.movies-container .movie-card:hover{
+.movies-container .movie-card:hover {
     scale: 1.1;
 }
 

@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Write a Review
-    </title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
+<%- include('../layout/base', { pageTitle: 'Write a Review' }) %>
     <%- include('../layout/header') %>
 
         <div class="container" style="max-width: 600px; margin: 2rem auto;">
-            <h2 style="margin-bottom: 1.5rem; text-align: center;">Write a Review
-            </h2>
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Write a Review</h2>
 
             <div class="card form-card">
                 <form action="/reviews/new/<%= movie._id %>" method="POST">
@@ -67,6 +55,5 @@
                 </form>
             </div>
         </div>
-</body>
 
-</html>
+        <%- include('../layout/footer') %>

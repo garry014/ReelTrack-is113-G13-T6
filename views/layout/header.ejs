@@ -1,16 +1,18 @@
 <header>
-    <h3>ReelTrack</h3>
+    <h4><a href="/movies">ReelTrack</a></h4>
     <nav>
         <a href="/movies">Movies</a>
         <% if (currentUser) { %>
-            <a href="/movies/new">Add Movie</a>
-            <a href="/profile">Profile (<%= currentUser.name %>)</a>
-            <form action="/logout" method="POST" style="display: inline;">
-                <button type="submit" class="btn">Logout</button>
-            </form>
-            <% } else { %>
-                <a class="btn" href="/login">Login</a>
+            <% if (currentUser.role==='admin' ) { %>
+                <a href="/movies/new">Add Movie</a>
                 <% } %>
+                    <a href="/profile">Profile (<%= currentUser.name %>)</a>
+                    <form action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                    </form>
+                    <% } else { %>
+                        <a class="btn btn-outline-light btn-sm" style="scale: 1;" href="/login">Login</a>
+                        <% } %>
     </nav>
 </header>
 
@@ -19,7 +21,8 @@
         <span>
             <%= messages.success %>
         </span>
-        <button type="button" class="alert-close" onclick="closeAlert('alert-success')">&times;</button>
+        <button type="button" class="btn-close btn-close-white alert-close" aria-label="Close"
+            onclick="closeAlert('alert-success')"></button>
     </div>
     <% } %>
         <% if (messages.error) { %>
@@ -27,7 +30,8 @@
                 <span>
                     <%= messages.error %>
                 </span>
-                <button type="button" class="alert-close" onclick="closeAlert('alert-error')">&times;</button>
+                <button type="button" class="btn-close btn-close-white alert-close" aria-label="Close"
+                    onclick="closeAlert('alert-error')"></button>
             </div>
             <% } %>
 

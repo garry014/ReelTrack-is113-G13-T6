@@ -1,28 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Movies - ReelTrack</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
+<%- include('../layout/base', { pageTitle: 'All Movies' }) %>
     <%- include('../layout/header') %>
-    <section class="movies">
-        <h2>All Movies</h2>
-        <hr style="border-color: #ff2424;">
-        <div class="movies-container">
-            <% allMovies.forEach((movie) => { %>
-                <a href="/movies/<%= movie._id %>" class="movie-card">
-                    <img src= <%= movie.posterUrl %> />
-                    <p><%= movie.title %></p>
-                    <span><%=movie.duration %> mins</span>
-                </a>
-            <% }) %>
-        </div>
-    </section>    
-</body>
 
-</html>
+        <section class="movies">
+            <h2>All Movies</h2>
+            <hr style="border-color: #ff2424;">
+            <div class="movies-container">
+                <% allMovies.forEach((movie)=> { %>
+                    <a href="/movies/<%= movie._id %>" class="movie-card">
+                        <img src=<%=movie.posterUrl %> />
+                        <p>
+                            <%= movie.title %>
+                        </p>
+                        <span>
+                            <%=movie.duration %> mins
+                        </span>
+                    </a>
+                    <% }) %>
+            </div>
+        </section>
+
+        <%- include('../layout/footer') %>

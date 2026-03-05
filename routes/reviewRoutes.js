@@ -4,7 +4,6 @@ const { Review, getAverageRating } = require('../models/Review');
 const Movie = require('../models/Movie');
 const { isLoggedIn, isOwner } = require('../middleware/authMiddleware');
 
-// TODO: Integration so user can click from movie page to view/write review
 // Conduct basic validations & then display EJS for new review page
 router.get('/new/:movieId', isLoggedIn, async (req, res) => {
     // check if there's even such movieId

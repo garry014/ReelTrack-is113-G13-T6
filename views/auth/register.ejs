@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - ReelTrack</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
+<%- include('../layout/base', { pageTitle: 'Register' }) %>
     <%- include('../layout/header') %>
+
         <div class="container">
             <div class="card" style="max-width: 400px; margin: 2rem auto;">
                 <h1>Register</h1>
@@ -26,13 +17,12 @@
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required>
                     </div>
-                    <button type="submit" style="width: 100%;">Register</button>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
                 </form>
                 <p style="margin-top: 1rem; text-align: center;">
                     Already have an account? <a href="/login">Login</a>
                 </p>
             </div>
         </div>
-</body>
 
-</html>
+        <%- include('../layout/footer') %>

@@ -1,144 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        Reviews
-    </title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        .movie-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .overall-rating {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--text-color);
-        }
-
-        .stars {
-            color: #f39c12;
-            font-size: 1.5rem;
-        }
-
-        .review-card {
-            margin-bottom: 1.5rem;
-            padding: 1.5rem;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-
-        .reviewer-info strong {
-            font-size: 1.1rem;
-        }
-
-        .review-date {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-left: 0.5rem;
-        }
-
-        .review-rating {
-            font-weight: bold;
-            color: #f39c12;
-            background: #fff3e0;
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-        }
-
-        .review-body {
-            line-height: 1.6;
-        }
-
-        .review-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-        }
-
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.4rem;
-            margin: 2rem 0 1rem;
-            flex-wrap: wrap;
-        }
-
-        .pagination a,
-        .pagination span {
-            display: inline-block;
-            padding: 0.4rem 0.85rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            text-decoration: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            transition: background 0.2s;
-        }
-
-        .pagination a:hover {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-
-        .pagination .active {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-            font-weight: bold;
-            pointer-events: none;
-        }
-
-        .pagination .disabled {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-    </style>
-</head>
-
-<body>
+<%- include('../layout/base', { pageTitle: 'Reviews' , extraCSS: ['/css/review.css'] }) %>
     <%- include('../layout/header') %>
 
         <div class="container">
             <!-- Movie Header Info -->
             <div class="movie-header">
-                <h1>Reviews
-                </h1>
+                <h1>Reviews</h1>
 
                 <div class="overall-rating">
                     <% if(averageRating.totalReviews> 0) { %>
                         Average Rating:
-                        <span class="stars">
-                            ★ <%= averageRating.averageRating %> / 5
-                        </span>
+                        <span class="stars">★ <%= averageRating.averageRating %> / 5</span>
                         <br>
                         <i style="font-size: 14px;">based on <%= averageRating.totalReviews %> review(s)</i>
                         <% } else { %>
@@ -149,8 +20,7 @@
                 <% if (currentUser && !hasReviewed) { %>
                     <a href="/reviews/new/<%= MOVIE_ID %>" class="btn btn-primary">Write a Review</a>
                     <% } else if (currentUser && hasReviewed) { %>
-                        <p style="color: var(--text-light);"><i>You have already reviewed this movie.</i>
-                        </p>
+                        <p style="color: var(--text-light);"><i>You have already reviewed this movie.</i></p>
                         <% } else { %>
                             <p><a href="/login" style="color: var(--primary-color);">Log in</a> to write a review.</p>
                             <% } %>
@@ -163,8 +33,7 @@
                 <% if (reviews.length===0) { %>
                     <div class="card" style="text-align: center; padding: 3rem;">
                         <h3>No reviews yet</h3>
-                        <p style="color: var(--text-light); margin-top: 0.5rem;">Be the first to review this movie!
-                        </p>
+                        <p style="color: var(--text-light); margin-top: 0.5rem;">Be the first to review this movie!</p>
                     </div>
                     <% } else { %>
                         <% reviews.forEach(review=> { %>
@@ -185,9 +54,7 @@
                                                     <% } %>
                                         </span>
                                     </div>
-                                    <div class="review-rating">
-                                        ★ <%= review.rating %> / 5
-                                    </div>
+                                    <div class="review-rating">★ <%= review.rating %> / 5</div>
                                 </div>
 
                                 <div class="review-body">
@@ -196,7 +63,7 @@
                                     </p>
                                 </div>
 
-                                <!-- Review Actions (Edit/Delete) if the review is written by the login user -->
+                                <!-- Review Actions (Edit/Delete) if the review is written by the logged-in user -->
                                 <% if (currentUser && currentUser._id.toString()===review.owner._id.toString()) { %>
                                     <div class="review-actions">
                                         <a href="/reviews/<%= review._id %>" class="btn btn-secondary btn-sm">Edit</a>
@@ -215,7 +82,6 @@
             <!-- Pagination Controls -->
             <% if (totalPages> 1) { %>
                 <nav class="pagination">
-                    <!-- Previous -->
                     <% if (currentPage> 1) { %>
                         <a href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage - 1 %>&limit=<%= limit %>">&laquo;
                             Prev</a>
@@ -223,7 +89,6 @@
                             <span class="disabled">&laquo; Prev</span>
                             <% } %>
 
-                                <!-- Page Numbers -->
                                 <% for (let i=1; i <=totalPages; i++) { %>
                                     <% if (i===currentPage) { %>
                                         <span class="active">
@@ -236,7 +101,6 @@
                                             <% } %>
                                                 <% } %>
 
-                                                    <!-- Next -->
                                                     <% if (currentPage < totalPages) { %>
                                                         <a
                                                             href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next
@@ -247,6 +111,5 @@
                 </nav>
                 <% } %>
         </div>
-</body>
 
-</html>
+        <%- include('../layout/footer') %>

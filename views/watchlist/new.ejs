@@ -1,13 +1,15 @@
 <h1>Add Movie to Watchlist</h1>
 <% if (error) { %>
-  <p style="color:red"><%= error %></p>
-<% } %>
-<form action="/watchlist" method="POST">
-  <p>
-    <label>Movie ID: <input name="movieId" required></label>
+  <p style="color:red">
+    <%= error %>
   </p>
-  <p>
-    <label>Notes: <textarea name="notes"></textarea></label>
-  </p>
-  <button type="submit">Add to Watchlist</button>
-</form>
+  <% } %>
+    <form action="/watchlist" method="POST">
+      <p>
+        <label>Movie ID: <input name="movieId" required></label>
+      </p>
+      <p>
+        <label>Notes: <textarea name="notes"></textarea></label>
+      </p>
+      <button type="submit" class="btn btn-primary">Add to Watchlist</button>
+    </form>

@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Review - <%= REVIEW.movieId.title %>
-    </title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
+<%- include('../layout/base', { pageTitle: 'Edit Review - ' + REVIEW.movieId.title }) %>
     <%- include('../layout/header') %>
 
         <div class="container" style="max-width: 600px; margin: 2rem auto;">
@@ -17,9 +6,9 @@
             </h2>
 
             <div class="card form-card">
-                <!-- Using _method=PUT assuming method-override is set up -->
                 <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST">
                     <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
+
                     <div style="margin-bottom: 1.5rem;">
                         <label for="rating" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">Rating
                             (1-5):</label>
@@ -57,6 +46,5 @@
                 </form>
             </div>
         </div>
-</body>
 
-</html>
+        <%- include('../layout/footer') %>
