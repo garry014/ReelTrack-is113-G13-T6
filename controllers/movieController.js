@@ -1,4 +1,5 @@
-const Movie = require('../models/Movie')
+const Movie = require('../models/Movie');
+const { getAverageRating } = require('../models/Review');
 
 async function showAllMovies(req, res) {
     try {
@@ -14,7 +15,8 @@ async function getOneMovie(req, res) {
     try {
         const movie = await Movie.findById(req.params.id)
         if (!movie) return res.render('error', { message: 'Movie not found' });
-        res.render('movies/movie', { movie });
+        const ratingData = await getAverageRating(movie._id);
+        res.render('movies/movie', { movie, ratingData });
     }
     catch (error) {
         res.render('error', { message: 'Invalid Movie ID' });

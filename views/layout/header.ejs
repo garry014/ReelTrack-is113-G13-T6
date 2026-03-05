@@ -8,7 +8,6 @@
         <a href="/movies">Movies</a>
         <% if (currentUser) { %>
             <a href="/watchlist">Watchlist</a>
-            <a href="/reviews">Reviews</a>
             <% if (currentUser.role==='admin' ) { %>
                 <a href="/movies/new">Add Movie</a>
                 <% } %>

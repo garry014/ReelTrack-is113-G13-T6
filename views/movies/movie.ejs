@@ -17,6 +17,23 @@
                     </h1>
 
                     <div class="movie-info-grid">
+                        <a href="/reviews/movie/<%= movie._id %>"
+                            style="display: contents; text-decoration: none; color: inherit; cursor: pointer;">
+                            <div class="movie-info-item" style="cursor: pointer;">
+                                <span class="movie-info-label">Ratings</span>
+                                <span class="movie-info-value">
+                                    <% if (ratingData.totalReviews> 0) { %>
+                                        ★ <%= ratingData.averageRating %> / 5
+                                            <div
+                                                style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">
+                                                Based on <%= ratingData.totalReviews %> reviews
+                                            </div>
+                                            <% } else { %>
+                                                No reviews yet
+                                                <% } %>
+                                </span>
+                            </div>
+                        </a>
                         <div class="movie-info-item">
                             <span class="movie-info-label">Director</span>
                             <span class="movie-info-value">
