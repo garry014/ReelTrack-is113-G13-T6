@@ -23,12 +23,14 @@
                             <div class="form-group">
                                 <label for="rating">Your Rating</label>
                                 <select name="rating" id="rating" required>
-                                    <option value="" disabled selected>Select a rating…</option>
-                                    <option value="5">★★★★★ — Excellent (5)</option>
-                                    <option value="4">★★★★☆ — Good (4)</option>
-                                    <option value="3">★★★☆☆ — Average (3)</option>
-                                    <option value="2">★★☆☆☆ — Poor (2)</option>
-                                    <option value="1">★☆☆☆☆ — Terrible (1)</option>
+                                    <option value="" disabled <%=rating==='' ? 'selected' : '' %>>
+                                        Select a rating…
+                                    </option>
+                                    <option value="5" <%=rating===5 ? 'selected' : '' %>>★★★★★ — Excellent (5)</option>
+                                    <option value="4" <%=rating===4 ? 'selected' : '' %>>★★★★☆ — Good (4)</option>
+                                    <option value="3" <%=rating===3 ? 'selected' : '' %>>★★★☆☆ — Average (3)</option>
+                                    <option value="2" <%=rating===2 ? 'selected' : '' %>>★★☆☆☆ — Poor (2)</option>
+                                    <option value="1" <%=rating===1 ? 'selected' : '' %>>★☆☆☆☆ — Terrible (1)</option>
                                 </select>
                             </div>
 
@@ -36,7 +38,7 @@
                                 <label for="reviewText">Your Review</label>
                                 <textarea name="reviewText" id="reviewText" rows="6"
                                     placeholder="What did you think? What stood out? What fell flat?"
-                                    required></textarea>
+                                    required><%= reviewText %></textarea>
                             </div>
 
                             <div class="form-group" style="display: flex; align-items: center; gap: 0.6rem;">

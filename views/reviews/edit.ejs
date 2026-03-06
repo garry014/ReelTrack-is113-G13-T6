@@ -11,43 +11,58 @@
             </div>
 
             <div class="card fade-in-up" style="animation-delay: 0.1s;">
-                <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST" id="edit-review-form">
-                    <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
-
-                    <div class="form-group">
-                        <label for="rating">Your Rating</label>
-                        <select name="rating" id="rating" required>
-                            <option value="5" <%=REVIEW.rating===5 ? 'selected' : '' %>>★★★★★ — Excellent (5)</option>
-                            <option value="4" <%=REVIEW.rating===4 ? 'selected' : '' %>>★★★★☆ — Good (4)</option>
-                            <option value="3" <%=REVIEW.rating===3 ? 'selected' : '' %>>★★★☆☆ — Average (3)</option>
-                            <option value="2" <%=REVIEW.rating===2 ? 'selected' : '' %>>★★☆☆☆ — Poor (2)</option>
-                            <option value="1" <%=REVIEW.rating===1 ? 'selected' : '' %>>★☆☆☆☆ — Terrible (1)</option>
-                        </select>
+                <% if (error) { %>
+                    <div
+                        style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.5rem;">
+                        ⚠ <%= error %>
                     </div>
+                    <% } %>
 
-                    <div class="form-group">
-                        <label for="reviewText">Your Review</label>
-                        <textarea name="reviewText" id="reviewText" rows="6"
-                            required><%= REVIEW.reviewText %></textarea>
-                    </div>
+                        <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST" id="edit-review-form">
+                            <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
 
-                    <div class="form-group" style="display: flex; align-items: center; gap: 0.6rem;">
-                        <input type="checkbox" name="isAnonymous" id="isAnonymous" value="on" <%=REVIEW.isAnonymous
-                            ? 'checked' : '' %>>
-                        <label for="isAnonymous"
-                            style="text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--text-muted); font-size: 0.875rem; margin: 0; cursor: pointer;">
-                            Post anonymously
-                        </label>
-                    </div>
+                            <div class="form-group">
+                                <label for="rating">Your Rating</label>
+                                <% const ratingScale=["Excellent", "Good" , "Average" , "Poor" , "Terrible" ] %>
+                                    <% const selectedRating=typeof(rating) !=='undefined' ? parseInt(rating) :
+                                        REVIEW.rating %>
+                                        <select name="rating" id="rating" required>
+                                            <% for (let i=5; i>= 1; i--) { %>
+                                                <option value="<%= i %>" <%=selectedRating===i ? 'selected' : '' %>>
+                                                    <%= '★' .repeat(i) + '☆' .repeat(5 - i) %> -
+                                                        <%= ratingScale[5 - i] %> (<%= i %>)
+                                                </option>
+                                                <% } %>
+                                        </select>
 
-                    <div class="divider"></div>
+                            </div>
 
-                    <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
-                        <a href="/reviews/movie/<%= REVIEW.movieId._id %>" class="btn btn-ghost"
-                            id="cancel-edit-review">Cancel</a>
-                        <button type="submit" class="btn btn-warning" id="update-review">✎ Update Review</button>
-                    </div>
-                </form>
+                            <div class="form-group">
+                                <label for="reviewText">Your Review</label>
+                                <textarea name="reviewText" id="reviewText" rows="6"
+                                    required><%= typeof(reviewText) !=='undefined' ? reviewText : REVIEW.reviewText %></textarea>
+                            </div>
+
+                            <div class="form-group" style="display: flex; align-items: center; gap: 0.6rem;">
+                                <% const selectedIsAnonymous=typeof(isAnonymousBool) !=='undefined' ?
+                                    parseInt(isAnonymousBool) : REVIEW.isAnonymous %>
+                                    <input type="checkbox" name="isAnonymous" id="isAnonymous" value="on"
+                                        <%=selectedIsAnonymous ? 'checked' : '' %>>
+                                    <label for="isAnonymous"
+                                        style="text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--text-muted); font-size: 0.875rem; margin: 0; cursor: pointer;">
+                                        Post anonymously
+                                    </label>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
+                                <a href="/reviews/movie/<%= REVIEW.movieId._id %>" class="btn btn-ghost"
+                                    id="cancel-edit-review">Cancel</a>
+                                <button type="submit" class="btn btn-warning" id="update-review">✎ Update
+                                    Review</button>
+                            </div>
+                        </form>
             </div>
         </div>
 
