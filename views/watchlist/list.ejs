@@ -36,8 +36,8 @@
                       <%= item.movieId %>
                     </td>
                     <td>
-                      <% const statusMap={ want_to_watch: { label: 'Want to Watch' , cls: 'badge-blue' }, watching: {
-                        label: 'Watching' , cls: 'badge-gold' }, watched: { label: 'Watched' , cls: 'badge-green' } };
+                      <% const statusMap={ 'want_to_watch': { label: 'Want to Watch' , cls: 'badge-blue' }, 'watching': {
+                        label: 'Watching' , cls: 'badge-gold' }, 'watched': { label: 'Watched' , cls: 'badge-green' } };
                         %>
                         <% const s=statusMap[item.status] || { label: item.status, cls: '' }; %>
                           <span class="badge <%= s.cls %>">
