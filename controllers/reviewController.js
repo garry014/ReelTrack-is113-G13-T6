@@ -53,7 +53,7 @@ async function createReview(req, res) {
         });
         await review.save();
 
-        req.flash('success', 'Thank you for your review!');
+        req.session.messages = { success: 'Thank you for your review!' };
         res.redirect(`/reviews/movie/${req.params.movieId}`);
     } catch (err) {
         const MOVIE = await Movie.findById(req.params.movieId);
@@ -117,11 +117,11 @@ async function updateReview(req, res) {
 
     try {
         await Review.findByIdAndUpdate(req.params.id, { rating, reviewText, isAnonymous, edited: true }, { runValidators: true });
-        req.flash('success', 'Item updated successfully!');
+        req.session.messages = { success: 'Review updated successfully!' };
         res.redirect(`/reviews/movie/${req.body.movieId}`);
     } catch (err) {
-        req.flash('error', err.message);
-        res.redirect(`/reviews/${req.body.movieId}`);
+        const REVIEW = await Review.findById(req.params.id).populate('movieId');
+        return res.render('reviews/edit', { REVIEW, rating, reviewText, isAnonymousBool: isAnonymous, error: err.message });
     }
 }
 
@@ -130,7 +130,7 @@ async function deleteReview(req, res) {
     const review = await Review.findById(req.params.id);
     const movieId = review?.movieId;
     await Review.findByIdAndDelete(req.params.id);
-    req.flash('success', 'Review deleted successfully');
+    req.session.messages = { success: 'Review deleted successfully' };
     res.redirect(`/reviews/movie/${movieId}`);
 }
 

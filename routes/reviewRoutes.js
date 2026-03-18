@@ -26,12 +26,12 @@ router.get('/:id', isLoggedIn, async (req, res, next) => {
 }, showEditReviewForm);
 
 // Update review
-router.put('/:id', isLoggedIn, async (req, res, next) => {
+router.post('/update/:id', isLoggedIn, async (req, res, next) => {
     await isOwner(req, res, next, Review);
 }, updateReview);
 
 // Delete review
-router.delete('/:id', isLoggedIn, async (req, res, next) => {
+router.post('/delete/:id', isLoggedIn, async (req, res, next) => {
     await isOwner(req, res, next, Review);
 }, deleteReview);
 

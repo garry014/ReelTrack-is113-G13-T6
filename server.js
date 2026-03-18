@@ -1,8 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
-const flash = require('connect-flash');
-const methodOverride = require('method-override');
+
 const path = require('path');
 const dotenv = require('dotenv');
 
@@ -24,18 +23,18 @@ server.set('views', path.join(__dirname, 'views'));
 server.use(express.static(path.join(__dirname, 'public')));
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
-server.use(methodOverride('_method'));
 server.use(session({
     secret: process.env.SESSION_SECRET || 'top-secret',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
-server.use(flash());
+
 
 // Global variables middleware
 server.use(async (req, res, next) => {
-    res.locals.messages = req.flash();
+    res.locals.messages = req.session.messages || {};
+    req.session.messages = {};
     res.locals.currentUser = null;
     if (req.session.userId) {
         const User = require('./models/User');

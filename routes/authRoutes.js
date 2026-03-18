@@ -13,10 +13,10 @@ router.post('/register', async (req, res) => {
         const { name, email, password } = req.body;
         const user = new User({ name, email, passwordHash: password });
         await user.save();
-        req.flash('success', 'Registration successful! Please login.');
+        req.session.messages = { success: 'Registration successful! Please login.' };
         res.redirect('/login');
     } catch (err) {
-        req.flash('error', err.message);
+        req.session.messages = { error: err.message };
         res.redirect('/register');
     }
 });
@@ -32,15 +32,15 @@ router.post('/login', async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user || !(await user.correctPassword(password, user.passwordHash))) {
-            req.flash('error', 'Invalid email or password');
+            req.session.messages = { error: 'Invalid email or password' };
             return res.redirect('/login');
         }
         req.session.userId = user._id;
         req.session.userName = user.name;
-        req.flash('success', `Welcome back, ${user.name}!`);
+        req.session.messages = { success: `Welcome back, ${user.name}!` };
         res.redirect('/movies');
     } catch (err) {
-        req.flash('error', 'Something went wrong');
+        req.session.messages = { error: 'Something went wrong' };
         res.redirect('/login');
     }
 });

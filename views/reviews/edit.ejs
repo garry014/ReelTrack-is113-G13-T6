@@ -18,7 +18,7 @@
                     </div>
                     <% } %>
 
-                        <form action="/reviews/<%= REVIEW._id %>?_method=PUT" method="POST" id="edit-review-form">
+                        <form action="/reviews/update/<%= REVIEW._id %>" method="POST" id="edit-review-form">
                             <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
 
                             <div class="form-group">

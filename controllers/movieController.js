@@ -36,11 +36,11 @@ async function addOneMovie(req, res) {
             synopsis: req.body.synopsis
         });
         await movie.save();
-        req.flash('success', 'Movie added successfully!');
+        req.session.messages = { success: 'Movie added successfully!' };
         res.redirect('/movies');
     }
     catch (error) {
-        req.flash('error', error.message);
+        req.session.messages = { error: error.message };
         res.redirect('/movies/new');
     }
 }
@@ -52,8 +52,7 @@ async function showEditForm(req, res) {
         res.render('movies/edit', { movie });
     }
     catch (error) {
-        req.flash('error', 'Invalid Movie ID');
-        res.redirect(`/movies/${req.params.id}`);
+        res.render('error', { message: 'Invalid Movie ID' });
     }
 }
 
