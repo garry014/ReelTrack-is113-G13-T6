@@ -35,5 +35,30 @@ const movieSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const Movie = mongoose.model('Movie', movieSchema);
+exports.Movie = Movie;
 
-module.exports = Movie;
+// Get all movies
+exports.getAllMovies = () => {
+    return Movie.find();
+};
+
+// Find a single movie by its ID
+exports.findMovieById = (id) => {
+    return Movie.findById(id);
+};
+
+// Create and save a new movie document
+exports.createMovie = (data) => {
+    const movie = new Movie(data);
+    return movie.save();
+};
+
+// Update a movie by ID with new data, running schema validators
+exports.updateMovieById = (id, data) => {
+    return Movie.findByIdAndUpdate(id, data, { runValidators: true });
+};
+
+// Delete a movie by ID
+exports.deleteMovieById = (id) => {
+    return Movie.findByIdAndDelete(id);
+};

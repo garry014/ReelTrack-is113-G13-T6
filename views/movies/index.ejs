@@ -17,7 +17,8 @@
                         <div class="movies-container">
                             <% allMovies.forEach((movie)=> { %>
                                 <a href="/movies/<%= movie._id %>" class="movie-card" id="movie-<%= movie._id %>">
-                                    <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster" loading="lazy">
+                                    <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster" loading="lazy"
+                                        onerror="this.onerror=null;this.src='/img/poster-not-available.webp';">
                                     <div class="movie-card-info">
                                         <p class="movie-card-title">
                                             <%= movie.title %>

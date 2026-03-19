@@ -8,7 +8,7 @@ router.get('/', movieController.showAllMovies);
 
 // New movie - Show form
 router.get('/new', isLoggedIn, isAdmin, (req, res) => {
-    res.render('movies/new');
+    res.render('movies/new', { formData: {} });
 });
 
 // Create new movie - Save to DB

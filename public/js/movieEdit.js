@@ -29,8 +29,11 @@ editMovieForm.addEventListener('submit', (event) => {
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        location.href = data.redirect
+        if (data.success) {
+            location.href = data.redirect;
+        } else {
+            alert(data.message);
+        }
     })
     .catch(error => alert(error.message))
 
