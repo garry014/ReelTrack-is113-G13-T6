@@ -7,12 +7,10 @@ const { isLoggedIn, isOwner, isAdmin } = require('../middleware/authMiddleware')
 router.get('/', movieController.showAllMovies);
 
 // New movie - Show form
-router.get('/new', isLoggedIn, isAdmin, (req, res) => {
-    res.render('movies/new');
-});
+router.get('/new', isLoggedIn, isAdmin, movieController.showAddForm);
 
 // Create new movie - Save to DB
-router.post('/', isLoggedIn, isAdmin, movieController.addOneMovie);
+router.post('/new', isLoggedIn, isAdmin, movieController.addOneMovie);
 
 // Show - Read one
 router.get('/:id', movieController.getOneMovie);
