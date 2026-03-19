@@ -1,4 +1,4 @@
-const { Review, getAverageRating } = require('../models/Review');
+const Review = require('../models/Review');
 const Movie = require('../models/Movie');
 
 // GET /reviews/new/:movieId - Show new review form
@@ -9,7 +9,7 @@ async function showNewReviewForm(req, res) {
     }
 
     // Check if user already reviewed this movie
-    const EXISTING_REVIEW = await Review.findOne({ owner: req.session.userId, movieId: req.params.movieId });
+    const EXISTING_REVIEW = await Review.findExistingReview(req.session.userId, req.params.movieId);
     if (EXISTING_REVIEW) {
         return res.render('error', { message: 'You have already reviewed this movie' });
     }
@@ -44,14 +44,13 @@ async function createReview(req, res) {
     }
 
     try {
-        const review = new Review({
+        await Review.createReview({
             movieId: req.params.movieId,
             rating,
             reviewText,
             isAnonymous,
             owner: req.session.userId
         });
-        await review.save();
 
         req.session.messages = { success: 'Thank you for your review!' };
         res.redirect(`/reviews/movie/${req.params.movieId}`);
@@ -76,20 +75,16 @@ async function getReviewsByMovie(req, res) {
     const currentPage = parseInt(req.query.page) || 1;  // current page number
     const skip = (currentPage - 1) * limit;             // how many to skip
 
-    const totalReviews = await Review.countDocuments({ movieId: MOVIE_ID });
+    const totalReviews = await Review.countByMovie(MOVIE_ID);
     const totalPages = Math.ceil(totalReviews / limit);
 
-    const reviews = await Review.find({ movieId: MOVIE_ID })
-        .populate('owner')
-        .sort({ createdAt: -1 })   // newest first
-        .skip(skip)
-        .limit(limit);
+    const reviews = await Review.getReviewsPaginated(MOVIE_ID, skip, limit);
 
-    const averageRating = await getAverageRating(MOVIE_ID);
+    const averageRating = await Review.getAverageRating(MOVIE_ID);
 
     // Check if the logged-in user has already reviewed this movie
     const hasReviewed = req.session.userId
-        ? await Review.exists({ movieId: MOVIE_ID, owner: req.session.userId })
+        ? await Review.hasUserReviewed(MOVIE_ID, req.session.userId)
         : false;
 
     res.render('reviews/index', { reviews, MOVIE, MOVIE_ID, hasReviewed, averageRating, currentPage, totalPages, limit });
@@ -97,7 +92,7 @@ async function getReviewsByMovie(req, res) {
 
 // GET /reviews/:id - Show edit review form
 async function showEditReviewForm(req, res) {
-    const REVIEW = await Review.findById(req.params.id).populate('movieId');
+    const REVIEW = await Review.findByIdWithMovie(req.params.id);
     console.log(REVIEW);
     res.render('reviews/edit', { REVIEW, error: "" });
 }
@@ -110,26 +105,25 @@ async function updateReview(req, res) {
 
     const errors = validateReview(rating, reviewText);
     if (errors.length > 0) {
-        const REVIEW = await Review.findById(req.params.id).populate('movieId');
+        const REVIEW = await Review.findByIdWithMovie(req.params.id);
         const isAnonymousBool = isAnonymous === 'on' ? true : false;
         return res.render('reviews/edit', { REVIEW, rating, reviewText, isAnonymousBool, error: errors.join(', ') });
     }
 
     try {
-        await Review.findByIdAndUpdate(req.params.id, { rating, reviewText, isAnonymous, edited: true }, { runValidators: true });
+        await Review.updateReviewById(req.params.id, { rating, reviewText, isAnonymous, edited: true });
         req.session.messages = { success: 'Review updated successfully!' };
         res.redirect(`/reviews/movie/${req.body.movieId}`);
     } catch (err) {
-        const REVIEW = await Review.findById(req.params.id).populate('movieId');
+        const REVIEW = await Review.findByIdWithMovie(req.params.id);
         return res.render('reviews/edit', { REVIEW, rating, reviewText, isAnonymousBool: isAnonymous, error: err.message });
     }
 }
 
 // DELETE /reviews/:id - Delete review
 async function deleteReview(req, res) {
-    const review = await Review.findById(req.params.id);
+    const review = await Review.deleteReviewById(req.params.id);
     const movieId = review?.movieId;
-    await Review.findByIdAndDelete(req.params.id);
     req.session.messages = { success: 'Review deleted successfully' };
     res.redirect(`/reviews/movie/${movieId}`);
 }
