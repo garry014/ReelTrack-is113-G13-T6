@@ -1,0 +1,150 @@
+<%- include('../layout/base', { pageTitle: 'Discussion — ' + MOVIE.title, extraCSS: ['/css/review.css'] }) %>
+<%- include('../layout/header') %>
+
+<div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+
+    <div class="movie-banner fade-in-up"
+        style="display: flex; gap: 2rem; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;">
+        <% if (MOVIE.posterUrl) { %>
+            <img src="<%= MOVIE.posterUrl %>" alt="<%= MOVIE.title %> poster"
+                style="width: 110px; height: 160px; object-fit: cover; border-radius: 10px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+        <% } else { %>
+            <div style="width: 110px; height: 160px; border-radius: 10px; flex-shrink: 0; background: var(--surface-2); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">🎬</div>
+        <% } %>
+        <div style="flex: 1; min-width: 0;">
+            <span class="section-label">Now Discussing</span>
+            <h1 style="font-size: 1.75rem; font-weight: 900; letter-spacing: -0.5px; margin-top: 0.25rem; margin-bottom: 0.5rem;">
+                <%= MOVIE.title %>
+            </h1>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <span style="background: rgba(var(--primary-rgb, 99,102,241),0.15); color: var(--primary); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;"><%= MOVIE.genre %></span>
+                <span style="background: var(--surface-2); color: var(--text-muted); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem;">📅 <%= MOVIE.releaseYear %></span>
+                <span style="background: var(--surface-2); color: var(--text-muted); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem;">🎬 <%= MOVIE.director %></span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                <%= MOVIE.synopsis %>
+            </p>
+        </div>
+    </div>
+
+    <div class="reviews-header" style="display: block;">
+        <span class="section-label">Discussion Board</span>
+        <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem;">Community Discussion</h2>
+        
+        <% if (currentUser) { %>
+            <form action="/comments" method="POST" style="background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem;">
+                <input type="hidden" name="movieId" value="<%= MOVIE_ID %>">
+                <textarea name="commentText" placeholder="Share your thoughts about this movie..." required 
+                    style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 1rem;"></textarea>
+                <div style="text-align: right;">
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </div>
+            </form>
+        <% } else { %>
+            <div style="background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem; text-align: center;">
+                <p class="text-muted text-sm" style="margin: 0;"><a href="/login" style="color: var(--primary);">Log in</a> to join the discussion.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="reviews-list">
+        <% if (!comments || comments.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-icon">💬</div>
+                <h3>No comments yet</h3>
+                <p>Be the first to share your thoughts about this film!</p>
+            </div>
+        <% } else { %>
+            <% comments.forEach(comment => { %>
+    
+                <% if (!comment.parentCommentId) { %>
+                    <div class="review-card" style="margin-bottom: 1rem;">
+                        
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    <%= comment.isAnonymous ? '?' : (comment.owner.name ? comment.owner.name.charAt(0).toUpperCase() : 'U') %>
+                                </div>
+                                <div>
+                                    <strong><%= comment.isAnonymous ? 'Anonymous' : (comment.owner.name || 'User') %></strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="review-body" id="comment-text-<%= comment._id %>">
+                            <p><%= comment.commentText %></p>
+                        </div>
+
+                        <form id="edit-form-<%= comment._id %>" action="/comments/<%= comment._id %>?_method=PUT" method="POST" style="display: none; margin-bottom: 1rem;">
+                            <textarea name="commentText" required style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 0.5rem;"><%= comment.commentText %></textarea>
+                            <div style="text-align: right;">
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('edit-form-<%= comment._id %>').style.display='none'; document.getElementById('comment-text-<%= comment._id %>').style.display='block';">Cancel</button>
+                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            </div>
+                        </form>
+
+                        <div class="review-actions">
+                            <% if (currentUser && currentUser._id.toString() === comment.owner._id.toString()) { %>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('edit-form-<%= comment._id %>').style.display='block'; document.getElementById('comment-text-<%= comment._id %>').style.display='none';">✎ Edit</button>
+                                <form action="/comments/<%= comment._id %>?_method=DELETE" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this comment?')">✕ Delete</button>
+                                </form>
+                            <% } %>
+                            
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('reply-form-<%= comment._id %>').style.display='block';">↩ Reply</button>
+                        </div>
+
+                        <form id="reply-form-<%= comment._id %>" action="/comments" method="POST" style="display: none; margin-top: 1rem; margin-left: 2rem; border-left: 2px solid #555; padding-left: 1rem;">
+                            <input type="hidden" name="movieId" value="<%= MOVIE_ID %>">
+                            <input type="hidden" name="parentCommentId" value="<%= comment._id %>"> 
+                            
+                            <textarea name="commentText" required placeholder="Write a reply..." style="width: 100%; min-height: 60px; padding: 0.8rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 0.5rem;"></textarea>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label style="color: var(--text-muted); font-size: 0.875rem; cursor: pointer;">
+                                    <input type="checkbox" name="isAnonymous"> 🕵️‍♂️ Post anonymously
+                                </label>
+                                <div>
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('reply-form-<%= comment._id %>').style.display='none';">Cancel</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <% const replies = comments.filter(c => c.parentCommentId && c.parentCommentId.toString() === comment._id.toString()); %>
+                    <% replies.forEach(reply => { %>
+                        <div class="review-card" style="margin-left: 3rem; margin-bottom: 1rem; border-left: 3px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.1);">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <div class="reviewer-avatar" style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                        <%= reply.isAnonymous ? '?' : (reply.owner.name ? reply.owner.name.charAt(0).toUpperCase() : 'U') %>
+                                    </div>
+                                    <div>
+                                        <strong><%= reply.isAnonymous ? 'Anonymous' : (reply.owner.name || 'User') %></strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review-body" id="reply-text-<%= reply._id %>">
+                                <p><%= reply.commentText %></p>
+                            </div>
+
+                            <% if (currentUser && currentUser._id.toString() === reply.owner._id.toString()) { %>
+                                <div class="review-actions">
+                                    <form action="/comments/<%= reply._id %>?_method=DELETE" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this reply?')">✕ Delete</button>
+                                    </form>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% }); %>
+
+                <% } %> <% }); %>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../layout/footer') %>

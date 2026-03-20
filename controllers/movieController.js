@@ -16,8 +16,7 @@ async function getOneMovie(req, res) {
         const movie = await Movie.findById(req.params.id)
         if (!movie) return res.render('error', { message: 'Movie not found' });
         const ratingData = await getAverageRating(movie._id);
-        const comments = await Comment.find({movieID : movie._id});
-        res.render('movies/movie', { movie, ratingData, comments });
+        res.render('movies/movie', { movie, ratingData });
     }
     catch (error) {
         res.render('error', { message: 'Invalid Movie ID' });
