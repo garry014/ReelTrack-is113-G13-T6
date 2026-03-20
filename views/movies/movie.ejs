@@ -79,7 +79,7 @@
             <!-- Tab Links -->
             <div class="movie-tabs">
                 <a href="/reviews/movie/<%= movie._id %>" class="movie-tab-link">⭐ Reviews</a>
-                <a href="#" class="movie-tab-link">💬 Discussion</a>
+                <a href="/comments/movie/<%=movie._id%>" class="movie-tab-link">💬 Discussion</a>
             </div>
 
             <!-- Synopsis -->
@@ -90,7 +90,7 @@
                 </p>
             </div>
         </div>
-
+    
         <script>
             const deletebtn = document.getElementById('delete-movie');
             if (deletebtn) {
