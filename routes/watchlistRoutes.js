@@ -1,15 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const Watchlist = require('../models/Watchlist');
-const getCurrentUserId = (req) => req.query.user || req.session?.userId || 'testuser123';
+const getCurrentUserId = (req) => { if (!req.session?.userId) {
+    throw new Error('Must be logged in to access watchlist');
+  }
+  return req.session.userId;
+};
 
 router.get('/', async (req, res) => {
   try {
     const userId = getCurrentUserId(req);
-    const watchlist = await Watchlist.find({ owner: userId });
+    const watchlist = await Watchlist.find({ owner: userId }).populate('owner', 'name');
     res.render('watchlist/index', { watchlist });
   } catch (err) {
-    res.status(500).send('Error fetching watchlist');
+    if (err.message === 'Must be logged in to access watchlist') {
+      res.redirect('/login');
+    } else {
+      res.status(500).send('Error fetching watchlist');
+    }
   }
 });
 

@@ -7,6 +7,7 @@ let genreInput = document.getElementById('genre')
 let synopsisInput = document.getElementById('synopsis')
 let editMovieForm = document.getElementById('editMovieForm')
 let movieid = document.getElementById('movieid')
+let inputErrorMsg = document.getElementById('inputErrorMsg')
 
 editMovieForm.addEventListener('submit', (event) => {
     event.preventDefault()
@@ -29,8 +30,13 @@ editMovieForm.addEventListener('submit', (event) => {
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
-        location.href = data.redirect
+        if ('inputError' in data) {
+            inputErrorMsg.textContent = data.inputError.join(', ')
+            inputErrorMsg.scrollIntoView({block:'center'})
+        } else {
+            alert(data.message);
+            location.href = data.redirect
+        }
     })
     .catch(error => alert(error.message))
 

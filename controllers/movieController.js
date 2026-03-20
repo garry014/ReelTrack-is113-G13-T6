@@ -3,7 +3,7 @@ const { getAverageRating } = require('../models/Review');
 
 async function showAllMovies(req, res) {
     try {
-        const allMovies = await Movie.find();
+        const allMovies = await Movie.retrieveAllMovies();
         res.render('movies/index', { allMovies, extraCSS: ['/css/movie.css'] });
     }
     catch (error) {
@@ -13,7 +13,7 @@ async function showAllMovies(req, res) {
 
 async function getOneMovie(req, res) {
     try {
-        const movie = await Movie.findById(req.params.id)
+        const movie = await Movie.findOneMovie(req.params.id);
         if (!movie) return res.render('error', { message: 'Movie not found' });
         const ratingData = await getAverageRating(movie._id);
         res.render('movies/movie', { movie, ratingData });
@@ -24,52 +24,55 @@ async function getOneMovie(req, res) {
 }
 
 async function addOneMovie(req, res) {
-    try {
-        const movie = new Movie({
-            title: req.body.title,
-            genre: req.body.genre,
-            releaseYear: req.body.year,
-            director: req.body.director,
-            posterUrl: req.body.poster,
-            addedBy: req.session.userId,
-            duration: req.body.duration,
-            synopsis: req.body.synopsis
-        });
-        await movie.save();
-        req.flash('success', 'Movie added successfully!');
-        res.redirect('/movies');
+    const checkInputError = validateInput(req)
+    if(checkInputError.status){
+        res.render('movies/new', { inputError: checkInputError.messages, formValues: req.body })
+    }else{
+        try {
+            await Movie.createOneMovie(req)
+            req.session.messages = { success: 'Movie added successfully!' };
+            res.redirect('/movies');
+        }
+        catch (error) {
+            req.session.messages = { error: error.message };
+            res.redirect('/movies/new');
+        }
     }
-    catch (error) {
-        req.flash('error', error.message);
-        res.redirect('/movies/new');
-    }
+}
+
+function showAddForm(req, res){
+    res.render('movies/new', {inputError:undefined, formValues: undefined});
 }
 
 async function showEditForm(req, res) {
     try {
-        const movie = await Movie.findById(req.params.id);
+        const movie = await Movie.findOneMovie(req.params.id);
         if (!movie) return res.render('error', { message: 'Movie not found' });
         res.render('movies/edit', { movie });
     }
     catch (error) {
-        req.flash('error', 'Invalid Movie ID');
-        res.redirect(`/movies/${req.params.id}`);
+        res.render('error', { message: 'Invalid Movie ID' });
     }
 }
 
 async function editMovie(req, res) {
-    try {
-        await Movie.findByIdAndUpdate(req.params.id, req.body, { runValidators: true });
-        res.json({ message: 'Success, Movie updated', redirect: `/movies/${req.params.id}` })
-    }
-    catch (error) {
-        res.json({ message: `Failed, ${error.message}`, redirect: `/movies/${req.params.id}/edit` })
+    const checkInputError = validateInput(req)
+    if (checkInputError.status){
+        res.json({inputError: checkInputError.messages})
+    }else{
+        try {
+            await Movie.updateOneMovie(req.params.id, req.body)
+            res.json({ message: 'Success, Movie updated', redirect: `/movies/${req.params.id}` })
+        }
+        catch (error) {
+            res.json({ message: `Failed, ${error.message}`, redirect: `/movies/${req.params.id}/edit` })
+        }
     }
 }
 
 async function deleteMovie(req, res) {
     try {
-        await Movie.findByIdAndDelete(req.params.id)
+        await Movie.removeOneMovie(req.params.id)
         res.json({ message: 'Sucess, Movie deleted', redirect: `/movies` })
     }
     catch (error) {
@@ -77,10 +80,28 @@ async function deleteMovie(req, res) {
     }
 }
 
+function validateInput(req){
+    let errors = {status: false, messages:[]}
+    const releaseYear = req.body.releaseYear;
+    const duration = req.body.duration;
+    const currentYear = new Date().getFullYear();
+    if (isNaN(releaseYear) || !Number.isInteger(Number(releaseYear))
+        || releaseYear < 1950 || releaseYear > currentYear) {
+            errors.status = true;
+            errors.messages.push(`Release Year must be a number and between year 1950 and ${currentYear} (inclusive)`)
+    }
+    if (isNaN(duration) || !Number.isInteger(Number(duration)) || duration < 1) {
+        errors.status = true
+        errors.messages.push("Duration must be a number more than 0")
+    }
+    return errors
+}
+
 module.exports = {
     showAllMovies,
     getOneMovie,
     addOneMovie,
+    showAddForm,
     showEditForm,
     editMovie,
     deleteMovie
