@@ -28,4 +28,18 @@ const commentSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+const Comment = mongoose.model('Comment', commentSchema);
+
+function updateOneComment(commentId, updateData) {
+    return Comment.findByIdAndUpdate(commentId, updateData, { new: true });
+}
+
+function deleteOneComment(commentId) {
+    return Comment.findByIdAndDelete(commentId);
+}
+
+module.exports = { 
+    Comment,
+    updateOneComment, 
+    deleteOneComment 
+};

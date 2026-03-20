@@ -1,5 +1,5 @@
-const Comment = require("../models/Comment");
-const Movie = require('../models/Movie');
+const { Comment, updateOneComment, deleteOneComment } = require('../models/Comment');
+const Movie  = require('../models/Movie');
 
 // create Comment
 async function addComment(req, res) {
@@ -25,7 +25,7 @@ async function showMovieComment(req, res) {
     try {
         const movieId = req.params.movieId;
         
-        const movie = await Movie.findById(movieId);
+        const movie = await Movie.findOneMovie(movieId);
         
         const comments = await Comment.find({ movieId: movieId }).populate('owner');
         
@@ -55,23 +55,22 @@ async function editComment(req, res) {
             return res.redirect(`/comments/movie/${comment.movieId}`);
         }
 
-        comment.commentText = req.body.commentText;
-        await comment.save();
+        const updatedComment = await updateOneComment(commentId, { commentText: req.body.commentText });
 
         req.session.messages = {success : 'Comment updated successfully!'};
-        res.redirect(`/comments/movie/${comment.movieId}`);
+        res.redirect(`/comments/movie/${updatedComment.movieId}`);
     } catch (error) {
         console.error(error);
         req.session.messages = {error : error.message};
         res.redirect('back');
     }
-}
+} 
 
 // delete Comment
 async function deleteComment(req,res) {
     try{
         const commentId = req.params.id;
-        const comment = awaitComment.findById(commentId);
+        const comment = await Comment.findById(commentId);
 
         if(!comment) {
             req.session.messages = {error:'Comment not found.'};
@@ -82,7 +81,7 @@ async function deleteComment(req,res) {
             return res.redirect(`/comments/movie/${comment.movieId}`);
         }
 
-        await Comment.findByIdAndDelete(commentId);
+        await deleteOneComment(req.params.id);
 
         req.session.messages = {success : 'Comment deleted successfully!'};
         res.redirect(`/comments/movie/${comment.movieId}`);
