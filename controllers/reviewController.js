@@ -3,7 +3,7 @@ const Movie = require('../models/Movie');
 
 // GET /reviews/new/:movieId - Show new review form
 async function showNewReviewForm(req, res) {
-    const MOVIE = await Movie.findById(req.params.movieId);
+    const MOVIE = await Movie.findOneMovie(req.params.movieId);
     if (!MOVIE) {
         return res.render('error', { message: 'Movie not found' });
     }
@@ -39,7 +39,7 @@ async function createReview(req, res) {
 
     const errors = validateReview(rating, reviewText);
     if (errors.length > 0) {
-        const MOVIE = await Movie.findById(req.params.movieId);
+        const MOVIE = await Movie.findOneMovie(req.params.movieId);
         return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: errors.join(', ') });
     }
 
@@ -55,7 +55,7 @@ async function createReview(req, res) {
         req.session.messages = { success: 'Thank you for your review!' };
         res.redirect(`/reviews/movie/${req.params.movieId}`);
     } catch (err) {
-        const MOVIE = await Movie.findById(req.params.movieId);
+        const MOVIE = await Movie.findOneMovie(req.params.movieId);
         console.error(err.message);
         return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: err.message });
     }
@@ -63,7 +63,7 @@ async function createReview(req, res) {
 
 // GET /reviews/movie/:movieId - List all reviews for a movie (with pagination)
 async function getReviewsByMovie(req, res) {
-    const MOVIE = await Movie.findById(req.params.movieId);
+    const MOVIE = await Movie.findOneMovie(req.params.movieId);
     if (!MOVIE) {
         return res.render('error', { message: 'Movie not found' });
     }
