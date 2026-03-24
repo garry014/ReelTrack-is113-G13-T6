@@ -91,7 +91,7 @@
                             <input type="hidden" name="movieId" id="modal-movie-id">
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                             <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Quick note (optional)</label>
-                            <textarea name="note" rows="4" placeholder="Loved the trailer... Must-watch superhero epic..." 
+                            <textarea name="note" rows="4" placeholder="Anything you want to remember about this film..." 
                                         style="width: 100%; padding: 0.75rem; border: 2px solid var(--border); border-radius: 8px; resize: vertical; font-family: inherit;"
                                         maxlength="500"></textarea>
                             </div>
@@ -137,22 +137,21 @@
                                 statusBadge.onclick = () => openWatchlistModal(movieId, movieTitle);
                             }
                             });
+                        
+                        document.querySelector('textarea[name="note"]').addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter' && !event.shiftKey) {
+                            event.preventDefault();
+                            document.getElementById('quick-watchlist-form').submit();
+                        }
+                        });
 
                         function openWatchlistModal(movieId, movieTitle) {
                             document.getElementById('modal-movie-id').value = movieId;
                             document.getElementById('modal-movie-title').textContent = movieTitle;
                             document.getElementById('watchlist-modal').style.display = 'block';
                             document.querySelector('textarea[name="note"]').focus();
-                            const textarea = document.querySelector('textarea[name="note"]');
-                            textarea.focus();
-                            textarea.addEventListener('keydown', function(event) {
-                                if (event.key === 'Enter' && !event.shiftKey) {
-                                event.preventDefault();
-                                document.getElementById('quick-watchlist-form').submit();
-                                }
-                            });
                             }
-                        
+
                         function closeWatchlistModal() {
                             document.getElementById('watchlist-modal').style.display = 'none';
                             document.getElementById('quick-watchlist-form').reset();
