@@ -33,15 +33,16 @@
                 <% watchlist.forEach(item=> { %>
                   <tr>
                     <td style="font-weight: 600;">
-                      <%= item.movieId %>
+                      <%= item.movieId.title %>
                     </td>
                     <td>
-                      <% const statusMap={ 'want_to_watch': { label: 'Want to Watch' , cls: 'badge-blue' }, 'watching': {
-                        label: 'Watching' , cls: 'badge-gold' }, 'watched': { label: 'Watched' , cls: 'badge-green' } };
+                      <% const statusMap={ 'want-to-watch': { label: 'Want to Watch' , cls: 'badge-blue' }, 
+                      'watching': { label: 'Watching' , cls: 'badge-gold' }, 
+                      'watched': { label: 'Watched' , cls: 'badge-green' } };
                         %>
-                        <% const s=statusMap[item.status] || { label: item.status, cls: '' }; %>
-                          <span class="badge <%= s.cls %>">
-                            <%= s.label %>
+                        <% const stat=statusMap[item.status] || { label: item.status, cls: '' }; %>
+                          <span class="badge <%= stat.cls %>">
+                            <%= stat.label %>
                           </span>
                     </td>
                     <td class="text-muted text-sm">
@@ -54,10 +55,8 @@
                       <div style="display: flex; gap: 0.5rem;">
                         <a href="/watchlist/<%= item._id %>/edit" class="btn btn-ghost btn-sm"
                           id="edit-watchlist-<%= item._id %>">✎ Edit</a>
-                        <form action="/watchlist/<%= item._id %>/delete" method="POST" style="display:inline;">
-                          <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Remove this movie from your watchlist?')"
-                            id="delete-watchlist-<%= item._id %>">✕</button>
+                          <button type="button" class="btn btn-danger btn-sm"
+                            onclick="openDeleteModal('<%= item._id %>', '<%= item.movieTitle %>')">✕</button>
                         </form>
                       </div>
                     </td>
@@ -68,5 +67,36 @@
           </div>
           <% } %>
     </div>
+
+    <div id="delete-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; backdrop-filter:blur(4px);">
+      <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#12121a; border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:2rem; max-width:400px; width:90%; box-shadow:0 25px 50px rgba(0,0,0,0.5);">
+        <h3 style="margin:0 0 0.5rem; font-size:1.2rem; font-weight:700;">Remove from Watchlist</h3>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem;">Remove <strong id="delete-movie-name" style="color:var(--text);"></strong> from your watchlist?</p>
+        <div style="display:flex; gap:1rem; justify-content:flex-end;">
+          <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+          <form id="delete-form" method="POST" style="display:inline;">
+            <button type="submit" class="btn btn-danger">✕ Remove</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function openDeleteModal(itemId, movieTitle) {
+        document.getElementById('delete-movie-name').textContent = movieTitle;
+        document.getElementById('delete-form').action = `/watchlist/${itemId}/delete`;
+        document.getElementById('delete-modal').style.display = 'block';
+      }
+
+      function closeDeleteModal() {
+        document.getElementById('delete-modal').style.display = 'none';
+      }
+
+      document.getElementById('delete-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+      });
+
+
+    </script>
 
     <%- include('../layout/footer') %>

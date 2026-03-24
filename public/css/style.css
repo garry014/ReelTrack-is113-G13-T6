@@ -738,7 +738,7 @@ footer.site-footer {
 .flex-center {
     display: flex;
     align-items: center;
-    justifycontent: center;
+    justify-content: center;
 }
 
 .flex-between {
