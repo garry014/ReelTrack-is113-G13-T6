@@ -9,6 +9,7 @@
       </div>
 
       <div class="card fade-in-up" style="animation-delay: 0.1s; overflow: visible;">
+
         <% if (typeof error !== 'undefined' && error) { %>
           <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.5rem;">
             ⚠ <%= error %>
@@ -45,7 +46,7 @@
         const movieTitleInput = document.getElementById('movieTitle');
         const movieIdInput = document.getElementById('movieId');
         const suggestions = document.getElementById('movie-suggestions');
-        
+
         document.getElementById('movieTitle').parentElement.style.position = 'relative';
 
         let debounceTimer;
@@ -53,7 +54,7 @@
         movieTitleInput.addEventListener('input', function () {
           clearTimeout(debounceTimer);
           const query = this.value.trim();
-          movieIdInput.value = ''; 
+          movieIdInput.value = '';
 
           if (query.length < 2) { suggestions.innerHTML = ''; return; }
 
