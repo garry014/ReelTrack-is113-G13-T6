@@ -14,15 +14,15 @@
           <div class="form-group">
             <label for="status">Status</label>
             <select id="status" name="status" required>
-              <option value="want-to-watch" <%=item.status==='want_to_watch' ? 'selected' : '' %>>🕐 Want to Watch
+              <option value="want-to-watch" <%=item.status==='want-to-watch' ? 'selected' : '' %>>🕐 Want to Watch
               </option>
               <option value="watching" <%=item.status==='watching' ? 'selected' : '' %>>▶ Watching</option>
               <option value="watched" <%=item.status==='watched' ? 'selected' : '' %>>✓ Watched</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="notes">Notes <span style="font-weight: 400; color: var(--text-muted);">(optional)</span></label>
-            <textarea id="notes" name="notes" rows="3"><%= item.notes %></textarea>
+            <label for="note">Notes <span style="font-weight: 400; color: var(--text-muted);">(optional)</span></label>
+            <textarea id="notes" name="note" rows="3"><%= item.notes %></textarea>
           </div>
 
           <div class="divider"></div>
@@ -34,5 +34,14 @@
         </form>
       </div>
     </div>
+
+    <script>
+  document.getElementById('notes').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      document.getElementById('update-watchlist-form').submit();
+    }
+  });
+</script>
 
     <%- include('../layout/footer') %>
