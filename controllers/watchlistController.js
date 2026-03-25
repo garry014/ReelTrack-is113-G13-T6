@@ -29,6 +29,11 @@ async function showNew(req, res) {
 async function create(req, res) {
   try {
     const userId = getCurrentUserId(req);
+
+    if (!req.body.movieId || req.body.movieId.trim() === '') {
+      return res.status(400).render('watchlist/new', { error: 'Please select a movie from the suggestions list.' });
+    }
+
     const movie = await findOneMovie(req.body.movieId);
 
     if (!movie) {

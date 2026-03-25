@@ -101,10 +101,20 @@
           }
         });
 
+        document.getElementById('add-watchlist-form').addEventListener('submit', function(event) {
+          if (!movieIdInput.value || movieIdInput.value.trim() === '') {
+            event.preventDefault();
+            movieTitleInput.setCustomValidity('Please select a movie from the dropdown suggestions.');
+            movieTitleInput.reportValidity();
+          } else {
+            movieTitleInput.setCustomValidity('');
+          }
+        });
+
         document.getElementById('notes').addEventListener('keydown', function(event) {
           if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            document.getElementById('add-watchlist-form').submit();
+            document.getElementById('add-watchlist-form').requestSubmit();
           }
         });
       });
