@@ -14,9 +14,6 @@ async function list(req, res) {
     const watchlist = await Watchlist.find({ owner: userId }).populate('movieId').populate('owner', 'name');
     res.render('watchlist/list', { watchlist });
   } catch (err) {
-    if (err.message === 'Must be logged in to access watchlist') {
-      return res.redirect('/login');
-    }
     console.error(err)
     res.status(500).send(err.message);
   }
@@ -100,8 +97,6 @@ async function showEdit(req, res) {
 
 async function checkInWatchlist(req, res) {
   try {
-    if (!req.session.userId) return res.json({ inWatchlist: false });
-
     const exists = await Watchlist.exists({
       movieId: req.query.movieId,
       owner: req.session.userId
