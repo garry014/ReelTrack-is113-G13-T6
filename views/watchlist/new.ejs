@@ -11,7 +11,8 @@
       <div class="card fade-in-up" style="animation-delay: 0.1s; overflow: visible;">
 
         <% if (typeof error !== 'undefined' && error) { %>
-          <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.5rem;">
+          <div style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; 
+          padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.5rem;">
             ⚠ <%= error %>
           </div>
           <% } %>
@@ -25,8 +26,7 @@
               </div>
 
               <div class="form-group">
-                <label for="notes">Notes <span
-                    style="font-weight: 400; color: var(--text-muted);">(optional)</span></label>
+                <label for="notes">Notes <span style="font-weight: 400; color: var(--text-muted);">(optional)</span></label>
                 <textarea id="notes" name="note" rows="3"
                   placeholder="Anything you want to remember about this film…"></textarea>
               </div>
@@ -66,7 +66,8 @@
               suggestions.innerHTML = '';
 
               if (movies.length === 0) {
-                suggestions.innerHTML = `<div style="padding:0.75rem 1rem; color:var(--text-muted); font-size:0.875rem;">No movies found</div>`;
+                suggestions.innerHTML = `<div style="padding:0.75rem 1rem; color:var(--text-muted); 
+                font-size:0.875rem;">No movies found</div>`;
                 return;
               }
 
@@ -90,7 +91,8 @@
                 suggestions.appendChild(item);
               });
             } catch (err) {
-              suggestions.innerHTML = `<div style="padding:0.75rem 1rem; color:#fca5a5; font-size:0.875rem;">Search failed</div>`;
+              suggestions.innerHTML = `<div style="padding:0.75rem 1rem; 
+              color:#fca5a5; font-size:0.875rem;">Search failed</div>`;
             }
           }, 250);
         });
