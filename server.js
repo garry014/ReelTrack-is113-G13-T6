@@ -43,6 +43,7 @@ server.use(async (req, res, next) => {
     next();
 });
 
+
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const movieRoutes = require('./routes/movieRoutes');
@@ -51,15 +52,30 @@ const userRoutes = require('./routes/userRoutes');
 const WatchlistRoutes = require('./routes/watchlistRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 
+
+
+server.use((req, res, next) => {
+    console.log('REQUEST:', req.method, req.url);
+    next();
+});
+// ✅ Must be BEFORE authRoutes so it's not swallowed
+// ✅ Replace server.use('/', authRoutes) with explicit paths
+server.get('/profile', (req, res) => res.redirect('/user/profile'));
+
 server.use('/', authRoutes);
 server.use('/movies', movieRoutes);
 server.use('/reviews', reviewRoutes);
-server.use('/', userRoutes);
-server.use('/watchlist', WatchlistRoutes)
+server.use('/user', userRoutes);
+server.use('/watchlist', WatchlistRoutes);
 server.use('/comments', commentRoutes);
+server.use((req, res, next) => {
+    console.log('404 hit:', req.method, req.url);
+    next();
+});
 
-server.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// 404 handler
+server.use((req, res) => {
+    res.status(404).render('error', { message: 'Page Not Found' });
 });
 
 // 404 handler
