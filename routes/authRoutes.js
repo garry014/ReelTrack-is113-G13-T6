@@ -66,20 +66,4 @@ router.post('/logout', (req, res) => {
     });
 });
 
-// Profile GET
-router.get('/profile', isLoggedIn, async (req, res) => {
-    try {
-        const user = await User.findById(req.session.userId);
-        if (!user) {
-            req.session.messages = { error: 'User not found.' };
-            return res.redirect('/login');
-        }
-        console.log('userId:', req.session.userId);
-        res.render('profile', { user });
-    } catch (err) {
-        req.session.messages = { error: 'Could not load profile.' };
-        res.redirect('/movies');
-    }
-});
-
 module.exports = router;

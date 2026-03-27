@@ -52,16 +52,6 @@ const userRoutes = require('./routes/userRoutes');
 const WatchlistRoutes = require('./routes/watchlistRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 
-
-
-server.use((req, res, next) => {
-    console.log('REQUEST:', req.method, req.url);
-    next();
-});
-// ✅ Must be BEFORE authRoutes so it's not swallowed
-// ✅ Replace server.use('/', authRoutes) with explicit paths
-server.get('/profile', (req, res) => res.redirect('/user/profile'));
-
 server.use('/', authRoutes);
 server.use('/movies', movieRoutes);
 server.use('/reviews', reviewRoutes);
@@ -73,9 +63,8 @@ server.use((req, res, next) => {
     next();
 });
 
-// 404 handler
-server.use((req, res) => {
-    res.status(404).render('error', { message: 'Page Not Found' });
+server.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // 404 handler
