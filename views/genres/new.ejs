@@ -1,0 +1,44 @@
+<%- include('../layout/base', { pageTitle: 'Add a Genre' }) %>
+<%- include('../layout/header') %>
+
+<div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <div class="mb-md fade-in-up">
+        <span class="section-label">Admin</span>
+        <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Add a New Genre</h1>
+        <p class="text-muted text-sm mt-sm">Fill in the details below to create a new genre.</p>
+    </div>
+
+    <% if (inputError) { %>
+        <p style="color:red"><%= inputError.join(', ') %></p>
+    <% } %>
+
+    <div class="card fade-in-up" style="animation-delay: 0.1s;">
+        <form action="/genres/new" method="POST" id="add-genre-form">
+            <div class="form-group">
+                <label for="name">Genre Name</label>
+                <input type="text" id="name" name="name" placeholder="e.g. Action"
+                value="<%= formValues ? formValues.name : '' %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="5" placeholder="Brief description of the genre..." required><%= formValues ? formValues.description : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="isActive">Active</label>
+                <div style="margin-top: 0.5rem;">
+                    <input type="checkbox" id="isActive" name="isActive"
+                    <%= formValues && formValues.isActive ? 'checked' : '' %>>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 0.5rem;">
+                <a href="/genres" class="btn btn-ghost">Cancel</a>
+                <button type="submit" class="btn btn-primary">🏷️ Create Genre</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../layout/footer') %>

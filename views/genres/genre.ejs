@@ -1,0 +1,51 @@
+<%- include('../layout/base', { pageTitle: genre.name }) %>
+<%- include('../layout/header') %>
+
+<div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <div class="mb-md fade-in-up">
+        <span class="section-label">Genre</span>
+        <h1 style="font-size: 2rem; font-weight: 900; letter-spacing: -0.5px;"><%= genre.name %></h1>
+        <p class="text-muted text-sm mt-sm"><%= genre.description %></p>
+        <p class="text-muted text-sm mt-sm">Status: <strong><%= genre.isActive ? 'Active' : 'Inactive' %></strong></p>
+    </div>
+
+    <% if (currentUser && currentUser.role === 'admin') { %>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+            <a href="/genres/<%= genre._id %>/edit" class="btn btn-warning">Edit Genre</a>
+            <a href="/genres" class="btn btn-ghost">Back to Genres</a>
+        </div>
+    <% } else { %>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="/genres" class="btn btn-ghost">Back to Genres</a>
+        </div>
+    <% } %>
+
+    <section class="movies-section fade-in-up" style="animation-delay: 0.1s;">
+        <span class="section-label">Browse</span>
+        <h2>Movies in this Genre</h2>
+        <div class="section-divider"></div>
+
+        <% if (relatedMovies.length === 0) { %>
+            <div class="empty-state">
+                <div class="empty-icon">🎬</div>
+                <h3>No movies found</h3>
+                <p>There are currently no movies under this genre.</p>
+            </div>
+        <% } else { %>
+            <div class="movies-container">
+                <% relatedMovies.forEach((movie) => { %>
+                    <a href="/movies/<%= movie._id %>" class="movie-card" id="movie-<%= movie._id %>">
+                        <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster" loading="lazy"
+                            onerror="this.onerror=null;this.src='/img/poster-not-available.webp';">
+                        <div class="movie-card-info">
+                            <p class="movie-card-title"><%= movie.title %></p>
+                            <p class="movie-card-meta"><%= movie.duration %> mins · <%= movie.genre %></p>
+                        </div>
+                    </a>
+                <% }) %>
+            </div>
+        <% } %>
+    </section>
+</div>
+
+<%- include('../layout/footer') %>

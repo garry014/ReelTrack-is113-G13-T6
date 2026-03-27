@@ -1,0 +1,81 @@
+<%- include('../layout/base', { pageTitle: 'Edit ' + genre.name }) %>
+<%- include('../layout/header') %>
+
+<div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <div class="mb-md fade-in-up">
+        <span class="section-label">Admin</span>
+        <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Edit Genre</h1>
+        <p class="text-muted text-sm mt-sm">Update the details for <strong style="color: var(--text);"><%= genre.name %></strong>.</p>
+    </div>
+
+    <p id="inputErrorMsg" style="color:red"></p>
+
+    <div class="card fade-in-up" style="animation-delay: 0.1s;">
+        <form id="editGenreForm">
+            <input type="hidden" id="genreid" value="<%= genre._id %>">
+
+            <div class="form-group">
+                <label for="name">Genre Name</label>
+                <input type="text" id="name" name="name" value="<%= genre.name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="5" required><%= genre.description %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="isActive">Active</label>
+                <div style="margin-top: 0.5rem;">
+                    <input type="checkbox" id="isActive" name="isActive" <%= genre.isActive ? 'checked' : '' %>>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 0.5rem;">
+                <a href="/genres/<%= genre._id %>" class="btn btn-ghost">Cancel</a>
+                <button type="submit" class="btn btn-warning">✎ Update Genre</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <script>
+    document.getElementById('editGenreForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const genreId = document.getElementById('genreid').value;
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const body = new URLSearchParams();
+        for (const pair of formData.entries()) {
+            body.append(pair[0], pair[1]);
+        }
+
+        const isActiveChecked = document.getElementById('isActive').checked;
+        if (isActiveChecked) {
+            body.set('isActive', 'on');
+        } else {
+            body.delete('isActive');
+        }
+
+        const response = await fetch(`/genres/${genreId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: body.toString()
+        });
+
+        const result = await response.json();
+
+        if (result.inputError) {
+            document.getElementById('inputErrorMsg').innerText = result.inputError.join(', ');
+        } else {
+            alert(result.message);
+            window.location.href = result.redirect;
+        }
+    });
+</script> -->
+
+<%- include('../layout/footer') %>
