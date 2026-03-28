@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');  // ✅ Was missing entirely
+const User = require('../models/User');
 const { isLoggedIn } = require('../middleware/authMiddleware');
 
 // ─── READ ───────────────────────────────────────────────
