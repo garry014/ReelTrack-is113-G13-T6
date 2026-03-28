@@ -1,4 +1,5 @@
 const Movie = require('../models/Movie');
+const Genre = require('../models/Genre');
 const { getAverageRating } = require('../models/Review');
 
 async function showAllMovies(req, res) {
@@ -26,7 +27,8 @@ async function getOneMovie(req, res) {
 async function addOneMovie(req, res) {
     const checkInputError = validateInput(req)
     if(checkInputError.status){
-        res.render('movies/new', { inputError: checkInputError.messages, formValues: req.body })
+        const allActiveGenre = await Genre.retrieveActiveGenres();
+        res.render('movies/new', { inputError: checkInputError.messages, formValues: req.body, allActiveGenre });
     }else{
         try {
             await Movie.createOneMovie(req)
@@ -40,15 +42,21 @@ async function addOneMovie(req, res) {
     }
 }
 
-function showAddForm(req, res){
-    res.render('movies/new', {inputError:undefined, formValues: undefined});
+async function showAddForm(req, res){
+    try {
+        const allActiveGenre = await Genre.retrieveActiveGenres();
+        res.render('movies/new', { inputError: undefined, formValues: undefined, allActiveGenre });
+    } catch(error){
+        res.render('error', {message: 'Unable to retrieve genre options'})
+    }
 }
 
 async function showEditForm(req, res) {
     try {
         const movie = await Movie.findOneMovie(req.params.id);
         if (!movie) return res.render('error', { message: 'Movie not found' });
-        res.render('movies/edit', { movie });
+        const allActiveGenre = await Genre.retrieveActiveGenres();
+        res.render('movies/edit', { movie, allActiveGenre });
     }
     catch (error) {
         res.render('error', { message: 'Invalid Movie ID' });
