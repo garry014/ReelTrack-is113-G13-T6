@@ -23,7 +23,7 @@ router.post('/profile/edit', isLoggedIn, async (req, res) => {
     try {
         const { name, email, currentPassword, newPassword, confirmPassword } = req.body;
 
-        // ✅ '+passwordHash' required because of select: false in schema
+        // '+passwordHash' required because of select: false in schema
         const user = await User.findById(req.session.userId).select('+passwordHash');
 
         if (!user) {
@@ -37,11 +37,10 @@ router.post('/profile/edit', isLoggedIn, async (req, res) => {
             return res.redirect('/user/profile');
         }
 
-        user.name  = name.trim()  || user.name;
+        user.name = name.trim() || user.name;
         user.email = email.trim() || user.email;
 
         if (newPassword) {
-            // ✅ Consistent 8-char minimum matching register.ejs and authRoutes.js
             if (newPassword.length < 8) {
                 req.session.messages = { error: 'New password must be at least 8 characters.' };
                 return res.redirect('/user/profile');
@@ -74,7 +73,6 @@ router.post('/profile/delete', isLoggedIn, async (req, res) => {
     try {
         const { confirmPassword } = req.body;
 
-        // ✅ '+passwordHash' required because of select: false in schema
         const user = await User.findById(req.session.userId).select('+passwordHash');
 
         if (!user) {
