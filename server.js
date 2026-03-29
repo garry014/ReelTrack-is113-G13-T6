@@ -50,21 +50,13 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
 const WatchlistRoutes = require('./routes/watchlistRoutes');
 const commentRoutes = require('./routes/commentRoutes');
-const genreRoutes = require('./routes/genreRoutes')
-
 
 server.use('/', authRoutes);
 server.use('/movies', movieRoutes);
 server.use('/reviews', reviewRoutes);
-server.use('/user', userRoutes);
-server.use('/watchlist', WatchlistRoutes);
+server.use('/', userRoutes);
+server.use('/watchlist', WatchlistRoutes)
 server.use('/comments', commentRoutes);
-server.use('/genres', genreRoutes);
-
-server.use((req, res, next) => {
-    console.log('404 hit:', req.method, req.url);
-    next();
-});
 
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
