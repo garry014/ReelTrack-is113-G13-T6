@@ -21,16 +21,19 @@ const reviewSchema = new mongoose.Schema(
         reviewText: {
             type: String,
             required: true,
+            minLength: 10,
+            maxLength: 500
         },
         isAnonymous: {
-            type: Boolean
+            type: Boolean,
+            default: false
         },
         edited: {
             type: Boolean,
             default: false,
         },
     },
-    { timestamps: { createdAt: 'createdAt', updatedAt: false } }
+    { timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' } }
 );
 
 // each user can only review a movie once

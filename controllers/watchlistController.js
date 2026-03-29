@@ -1,4 +1,11 @@
-const Watchlist = require('../models/Watchlist');
+const {
+  retrieveUserWatchlist,
+  checkWatchlistExists,
+  createWatchlistItem,
+  findOneWatchlistItem,
+  updateOneWatchlistItem,
+  removeOneWatchlistItem
+} = require('../models/Watchlist');
 const { retrieveAllMovies, findOneMovie } = require('../models/Movie');
 
 const getCurrentUserId = (req) => {
@@ -11,7 +18,7 @@ const getCurrentUserId = (req) => {
 async function list(req, res) {
   try {
     const userId = getCurrentUserId(req);
-    const watchlist = await Watchlist.find({ owner: userId }).populate('movieId').populate('owner', 'name');
+    const watchlist = await retrieveUserWatchlist(userId);
     res.render('watchlist/list', { watchlist });
   } catch (err) {
     console.error(err)
@@ -38,10 +45,7 @@ async function create(req, res) {
       return res.redirect(safeBack);
     }
 
-    const exists = await Watchlist.exists({
-      movieId: req.body.movieId,
-      owner: req.session.userId
-    });
+    const exists = await checkWatchlistExists(req.body.movieId, req.session.userId);
 
     if (exists) {
       req.session.messages = { error: `${movie.title} is already in your watchlist!` };
@@ -49,15 +53,7 @@ async function create(req, res) {
       return res.redirect(safeBack);
     }
 
-    const watchlistItem = new Watchlist({
-      owner: userId,
-      movieId: movie._id,
-      movieTitle: movie.title,
-      notes: req.body.note || '',
-      status: 'want-to-watch'
-    });
-
-    await watchlistItem.save();
+    const watchlistItem = await createWatchlistItem(userId, movie._id, movie.title, req.body.note);
     req.session.messages = { success: `${watchlistItem.movieTitle} added!` };
     res.redirect('/watchlist');
   } catch (err) {
@@ -87,7 +83,7 @@ async function search(req, res) {
 async function showEdit(req, res) {
   try {
     const userId = getCurrentUserId(req);
-    const item = await Watchlist.findOne({ _id: req.params.id, owner: userId });
+    const item = await findOneWatchlistItem(req.params.id, userId);
     if (!item) return res.status(404).send('Not found');
     res.render('watchlist/update', { item });
   } catch (err) {
@@ -97,10 +93,7 @@ async function showEdit(req, res) {
 
 async function checkInWatchlist(req, res) {
   try {
-    const exists = await Watchlist.exists({
-      movieId: req.query.movieId,
-      owner: req.session.userId
-    });
+    const exists = await checkWatchlistExists(req.query.movieId, req.session.userId);
     res.json({ inWatchlist: !!exists });
   } catch (err) {
     res.json({ inWatchlist: false });
@@ -110,10 +103,7 @@ async function checkInWatchlist(req, res) {
 async function update(req, res) {
   try {
     const userId = getCurrentUserId(req);
-    await Watchlist.findOneAndUpdate(
-      { _id: req.params.id, owner: userId },
-      { status: req.body.status, notes: req.body.note }
-    );
+    await updateOneWatchlistItem(req.params.id, userId, req.body.status, req.body.note);
     res.redirect('/watchlist');
   } catch (err) {
     res.status(400).send('Update failed');
@@ -123,7 +113,7 @@ async function update(req, res) {
 async function remove(req, res) {
   try {
     const userId = getCurrentUserId(req);
-    await Watchlist.findOneAndDelete({ _id: req.params.id, owner: userId });
+    await removeOneWatchlistItem(req.params.id, userId);
     res.redirect('/watchlist');
   } catch (err) {
     res.status(500).send('Delete failed');

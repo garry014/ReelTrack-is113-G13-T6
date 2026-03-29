@@ -5,7 +5,8 @@
             <!-- Movie Hero -->
             <div class="movie-detail-hero">
                 <div class="movie-poster-wrap">
-                    <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster">
+                    <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster"
+                        onerror="this.onerror=null;this.src='/img/poster-not-available.webp';">
                 </div>
 
                 <div class="movie-meta-block">

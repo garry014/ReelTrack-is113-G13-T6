@@ -5,12 +5,14 @@ const genreSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true
+        unique: true,
+        minLength: [3, 'Genre name must be at least 3 characters long.'],
+        maxLength: [20, 'Genre name must be at most 20 characters long.']
     },
     description: {
         type: String,
-        required: true,
-        trim: true,
+        required: [true, 'Description is required.'],
+        trim: true
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
