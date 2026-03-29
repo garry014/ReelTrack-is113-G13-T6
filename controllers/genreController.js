@@ -80,18 +80,27 @@ async function showEditForm(req, res) {
 }
 
 async function editGenre(req, res) {
+    console.log(req.body)
     const checkInputError = validateInput(req);
 
     if (checkInputError.status) {
+
         res.json({ inputError: checkInputError.messages });
     }
     else {
         try {
+
             await Genre.updateOneGenre(req.params.id, req.body);
-            res.json({ message: 'Success, Genre updated', redirect: `/genres/${req.params.id}` });
+
+
+            req.session.messages = { success: 'Genre updated successfully!' };
+            res.redirect(`/genres/${req.params.id}`);
+
+
         }
         catch (error) {
-            res.json({ message: `Failed, ${error.message}`, redirect: `/genres/${req.params.id}/edit` });
+            req.session.messages = { error: error.message };
+            res.redirect(`/genres/${req.params.id}/edit`);
         }
     }
 }

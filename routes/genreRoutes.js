@@ -22,7 +22,7 @@ router.get('/:id', genreController.getOneGenre);
 router.get('/:id/edit', isLoggedIn, isAdmin, genreController.showEditForm);
 
 // Update genre
-router.put('/:id', isLoggedIn, isAdmin, genreController.editGenre);
+router.post('/:id', isLoggedIn, isAdmin, genreController.editGenre);
 
 // Delete genre
 router.delete('/:id', isLoggedIn, isAdmin, genreController.deleteGenre);
