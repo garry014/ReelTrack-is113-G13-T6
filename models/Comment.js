@@ -33,7 +33,7 @@ const commentSchema = new mongoose.Schema({
 const Comment = mongoose.model('Comment', commentSchema);
 
 function updateOneComment(commentId, updateData) {
-    return Comment.findByIdAndUpdate(commentId, updateData, { new: true });
+    return Comment.findByIdAndUpdate(commentId, updateData, { new: true, runValidators: true });
 }
 
 function deleteOneComment(commentId) {

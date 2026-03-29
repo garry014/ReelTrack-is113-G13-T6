@@ -80,7 +80,7 @@ async function editComment(req, res) {
         };
         
         req.session.messages = { error: error.message };
-        res.redirect('back');
+        res.redirect(req.get('Referer') || `/comments/movie/${req.body.movieId}`);
     }
 } 
 
