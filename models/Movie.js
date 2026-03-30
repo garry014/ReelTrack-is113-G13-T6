@@ -50,7 +50,7 @@ function createOneMovie(req){
         genre: req.body.genre,
         releaseYear: req.body.releaseYear,
         director: req.body.director,
-        posterUrl: req.body.poster,
+        posterUrl: req.body.posterUrl,
         addedBy: req.session.userId,
         duration: req.body.duration,
         synopsis: req.body.synopsis

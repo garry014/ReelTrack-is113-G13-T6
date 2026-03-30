@@ -7,7 +7,7 @@
                 <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Add a New Movie</h1>
                 <p class="text-muted text-sm mt-sm">Fill in the details below to publish a movie to ReelTrack.</p>
             </div>
-            <% if(inputError){ %>
+            <% if(inputError.length > 0){ %>
                 <p style="color:red"><%= inputError.join(', ') %></p>
             <% } %>
             <div class="card fade-in-up" style="animation-delay: 0.1s;">
@@ -24,7 +24,7 @@
                     </div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div class="form-group">
-                            <label for="year">Release Year</label>
+                            <label for="releaseYear">Release Year</label>
                             <input type="number" id="year" name="releaseYear" placeholder="2024" 
                             value="<%= formValues ? formValues.releaseYear : '' %>" required>
                         </div>
@@ -38,22 +38,16 @@
                         <label for="genre">Genre</label>
                         <select id="genre" name="genre" required>
                             <option value="" disabled selected>Select genre…</option>
-                            <option value="Action" 
-                            <%= formValues?.genre ==='Action'? 'selected':'' %> >Action</option>
-                            <option value="Sci-Fi"
-                            <%= formValues?.genre ==='Sci-Fi'? 'selected':'' %>>Sci-Fi</option>
-                            <option value="Fantasy"
-                            <%= formValues?.genre ==='Fantasy'? 'selected':'' %>>Fantasy</option>
-                            <option value="Thriller"
-                            <%= formValues?.genre ==='Thriller'? 'selected':'' %>>Thriller</option>
-                            <option value="Tragedy"
-                            <%= formValues?.genre ==='Tragedy'? 'selected':'' %>>Tragedy</option>
+                            <% allActiveGenre.forEach((genre) => { %>
+                                <option value="<%= genre.name %>" 
+                                <%= formValues?.genre === genre.name? 'selected':'' %> ><%= genre.name %></option>
+                            <% }) %>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="poster">Poster URL</label>
-                        <input type="url" id="poster" name="poster" placeholder="https://…"
-                        value="<%= formValues ? formValues.poster : '' %>" required>
+                        <label for="posterUrl">Poster URL</label>
+                        <input type="url" id="poster" name="posterUrl" placeholder="https://…"
+                        value="<%= formValues ? formValues.posterUrl : '' %>" required>
                     </div>
                     <div class="form-group">
                         <label for="synopsis">Synopsis</label>

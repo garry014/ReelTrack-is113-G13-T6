@@ -35,11 +35,9 @@
                     <div class="form-group">
                         <label for="genre">Genre</label>
                         <select id="genre" name="genre" required>
-                            <option value="Action" <%=movie.genre==='Action' ? 'selected' : '' %>>Action</option>
-                            <option value="Sci-Fi" <%=movie.genre==='Sci-Fi' ? 'selected' : '' %>>Sci-Fi</option>
-                            <option value="Fantasy" <%=movie.genre==='Fantasy' ? 'selected' : '' %>>Fantasy</option>
-                            <option value="Thriller" <%=movie.genre==='Thriller' ? 'selected' : '' %>>Thriller</option>
-                            <option value="Tragedy" <%=movie.genre==='Tragedy' ? 'selected' : '' %>>Tragedy</option>
+                            <% allActiveGenre.forEach((genre) => { %>
+                                <option value="<%= genre.name %>" <%=movie.genre=== genre.name ? 'selected' : '' %>><%= genre.name %></option>
+                            <% }) %>
                         </select>
                     </div>
                     <div class="form-group">
