@@ -1,26 +1,40 @@
 const Review = require('../models/Review');
 const Movie = require('../models/Movie');
 
+async function fetchMovieById(movieId) {
+    try {
+        return await Movie.findOneMovie(movieId);
+    } catch (error) {
+        console.error(error.message);
+        return null;
+    }
+}
+
 // GET /reviews/new/:movieId - Show new review form
 async function showNewReviewForm(req, res) {
-    const MOVIE = await Movie.findOneMovie(req.params.movieId);
-    if (!MOVIE) {
+    const movie = await fetchMovieById(req.params.movieId);
+    if (!movie) {
         return res.render('error', { message: 'Movie not found' });
     }
 
     // Check if user already reviewed this movie
-    const EXISTING_REVIEW = await Review.findExistingReview(req.session.userId, req.params.movieId);
-    if (EXISTING_REVIEW) {
-        return res.render('error', { message: 'You have already reviewed this movie' });
+    try {
+        const existingReview = await Review.findExistingReview(req.session.userId, req.params.movieId);
+        if (existingReview) {
+            return res.render('error', { message: 'You have already reviewed this movie' });
+        }
+    } catch (error) {
+        console.error(error.message);
+        return res.render('error', { message: 'Movie not found' });
     }
 
-    res.render('reviews/new', { movie: MOVIE, rating: "", reviewText: "", isAnonymous: false, error: "" });
+    res.render('reviews/new', { movie, rating: "", reviewText: "", isAnonymous: false, error: "" });
 }
 
 function validateReview(rating, reviewText) {
     let errors = [];
     if (!rating) {
-        errors.push("Please fill in all fields");
+        errors.push("Please fill in the ratings");
     }
     if (rating < 1 || rating > 5) {
         errors.push("Rating must be between 1 and 5");
@@ -33,14 +47,18 @@ function validateReview(rating, reviewText) {
 
 // POST /reviews/new/:movieId - Create review
 async function createReview(req, res) {
-    let rating = req.body.rating;
-    let reviewText = req.body.reviewText;
-    let isAnonymous = req.body.isAnonymous === 'on'; // checkbox sends "on" or undefined
+    const rating = req.body.rating;
+    const reviewText = req.body.reviewText;
+    const isAnonymous = req.body.isAnonymous === 'on'; // checkbox sends "on" or undefined
+
+    const movie = await fetchMovieById(req.params.movieId);
+    if (!movie) {
+        return res.render('error', { message: 'Movie not found' });
+    }
 
     const errors = validateReview(rating, reviewText);
     if (errors.length > 0) {
-        const MOVIE = await Movie.findOneMovie(req.params.movieId);
-        return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: errors.join(', ') });
+        return res.render('reviews/new', { movie, rating, reviewText, isAnonymous, error: errors.join(', ') });
     }
 
     try {
@@ -54,82 +72,113 @@ async function createReview(req, res) {
 
         req.session.messages = { success: 'Thank you for your review!' };
         res.redirect(`/reviews/movie/${req.params.movieId}`);
-    } catch (err) {
-        const MOVIE = await Movie.findOneMovie(req.params.movieId);
-        console.error(err.message);
-        if (err.code === 11000) {
-            return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: 'You have already reviewed this movie' });
+    } catch (error) {
+        console.error(error.message);
+        if (error.code === 11000) {
+            return res.render('reviews/new', { movie, rating, reviewText, isAnonymous, error: 'You have already reviewed this movie' });
         }
         req.session.messages = { error: 'Sorry, something went wrong. Please try again.' };
-        return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: err.message });
+        return res.render('reviews/new', { movie, rating, reviewText, isAnonymous, error: error.message });
     }
 }
 
 // GET /reviews/movie/:movieId - List all reviews for a movie (with pagination)
 async function getReviewsByMovie(req, res) {
-    const MOVIE = await Movie.findOneMovie(req.params.movieId);
-    if (!MOVIE) {
+    const movieId = req.params.movieId;
+    const movie = await fetchMovieById(movieId);
+    
+    if (!movie) {
         return res.render('error', { message: 'Movie not found' });
     }
-
-    const MOVIE_ID = req.params.movieId;
 
     // Pagination params
     const limit = parseInt(req.query.limit) || 5;        // reviews per page
     const currentPage = parseInt(req.query.page) || 1;  // current page number
-    const skip = (currentPage - 1) * limit;             // how many to skip
+    const skip = (currentPage - 1) * limit;             // how many records to skip
 
-    const totalReviews = await Review.countByMovie(MOVIE_ID);
-    const totalPages = Math.ceil(totalReviews / limit);
+    try {
+        const totalReviews = await Review.countByMovie(movieId);
+        const totalPages = Math.ceil(totalReviews / limit);
 
-    const reviews = await Review.getReviewsPaginated(MOVIE_ID, skip, limit);
+        const reviews = await Review.getReviewsPaginated(movieId, skip, limit);
+        const averageRating = await Review.getAverageRating(movieId);
 
-    const averageRating = await Review.getAverageRating(MOVIE_ID);
+        // Check if the logged-in user has already reviewed this movie
+        let hasReviewed = false;
+        if (req.session.userId) {
+             hasReviewed = await Review.hasUserReviewed(movieId, req.session.userId);
+        }
 
-    // Check if the logged-in user has already reviewed this movie
-    const hasReviewed = req.session.userId
-        ? await Review.hasUserReviewed(MOVIE_ID, req.session.userId)
-        : false;
-
-    res.render('reviews/index', { reviews, MOVIE, MOVIE_ID, hasReviewed, averageRating, currentPage, totalPages, limit });
+        res.render('reviews/index', {
+            reviews,
+            movie,
+            movieId,
+            hasReviewed,
+            averageRating,
+            currentPage,
+            totalPages,
+            limit
+        });
+    } catch (error) {
+        console.error(error.message);
+        return res.render('error', { message: 'Error retrieving reviews' });
+    }
 }
 
 // GET /reviews/:id - Show edit review form
 async function showEditReviewForm(req, res) {
-    const REVIEW = await Review.findByIdWithMovie(req.params.id);
-    console.log(REVIEW);
-    res.render('reviews/edit', { REVIEW, error: "" });
+    try {
+        const review = await Review.findByIdWithMovie(req.params.id);
+        res.render('reviews/edit', { review, error: "" });
+    } catch (error) {
+        console.error(error.message);
+        return res.render('error', { message: 'Review not found' });
+    }
 }
 
 // PUT /reviews/:id - Update review
 async function updateReview(req, res) {
-    let rating = req.body.rating;
-    let reviewText = req.body.reviewText;
-    let isAnonymous = req.body.isAnonymous === 'on'; // checkbox sends "on" or undefined
+    const rating = req.body.rating;
+    const reviewText = req.body.reviewText;
+    const isAnonymous = req.body.isAnonymous === 'on';
 
     const errors = validateReview(rating, reviewText);
     if (errors.length > 0) {
-        const REVIEW = await Review.findByIdWithMovie(req.params.id);
-        const isAnonymousBool = isAnonymous === 'on' ? true : false;
-        return res.render('reviews/edit', { REVIEW, rating, reviewText, isAnonymousBool, error: errors.join(', ') });
+        try {
+            const review = await Review.findByIdWithMovie(req.params.id);
+            return res.render('reviews/edit', { review, rating, reviewText, isAnonymousBool: isAnonymous, error: errors.join(', ') });
+        } catch (error) {
+             console.error(error.message);
+             return res.render('error', { message: 'Review not found' });
+        }
     }
 
     try {
         await Review.updateReviewById(req.params.id, { rating, reviewText, isAnonymous, edited: true });
         req.session.messages = { success: 'Review updated successfully!' };
         res.redirect(`/reviews/movie/${req.body.movieId}`);
-    } catch (err) {
-        const REVIEW = await Review.findByIdWithMovie(req.params.id);
-        return res.render('reviews/edit', { REVIEW, rating, reviewText, isAnonymousBool: isAnonymous, error: err.message });
+    } catch (error) {
+        try {
+            const review = await Review.findByIdWithMovie(req.params.id);
+            return res.render('reviews/edit', { review, rating, reviewText, isAnonymousBool: isAnonymous, error: error.message });
+        } catch (innerError) {
+             console.error(innerError.message);
+             return res.render('error', { message: 'Error updating review' });
+        }
     }
 }
 
 // DELETE /reviews/:id - Delete review
 async function deleteReview(req, res) {
-    const review = await Review.deleteReviewById(req.params.id);
-    const movieId = review?.movieId;
-    req.session.messages = { success: 'Review deleted successfully' };
-    res.redirect(`/reviews/movie/${movieId}`);
+    try {
+        const review = await Review.deleteReviewById(req.params.id);
+        const movieId = review?.movieId;
+        req.session.messages = { success: 'Review deleted successfully' };
+        res.redirect(`/reviews/movie/${movieId}`);
+    } catch (error) {
+         console.error(error.message);
+         return res.render('error', { message: 'Error deleting review' });
+    }
 }
 
 module.exports = {
