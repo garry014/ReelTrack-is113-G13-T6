@@ -122,7 +122,9 @@ async function update(req, res) {
     if (req.body.note && req.body.note.length > 500) {
       return res.status(400).send('Note cannot exceed 500 characters');
     }
-    await updateOneWatchlistItem(req.params.id, userId, req.body.status, req.body.note);
+    await Watchlist.findOneAndUpdate(
+      {_id: req.params.id, owner: userId}, 
+      {status: req.body.status, notes: req.body.note});
     res.redirect('/watchlist');
   } catch (err) {
     res.status(400).send('Update failed');
