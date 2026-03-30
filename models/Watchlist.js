@@ -31,7 +31,9 @@ const watchlistSchema = new mongoose.Schema({
 }, {timestamps: true 
 });
 
+
 //each user can only add a movie to watchlist once
+watchlistSchema.index({ owner: 1, movieId: 1 }, { unique: true });
 const Watchlist = mongoose.model('Watchlist', watchlistSchema);
 
 function retrieveUserWatchlist(userId) {
@@ -80,5 +82,5 @@ module.exports = {
   removeOneWatchlistItem
 };
 
-module.exports = mongoose.model('Watchlist', watchlistSchema);
+
 

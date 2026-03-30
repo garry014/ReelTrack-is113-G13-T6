@@ -6,7 +6,6 @@ const {
   updateOneWatchlistItem,
   removeOneWatchlistItem
 } = require('../models/Watchlist');
-const Watchlist = require('../models/Watchlist');
 const { retrieveAllMovies, findOneMovie } = require('../models/Movie');
 
 const getCurrentUserId = (req) => {
@@ -113,9 +112,11 @@ async function update(req, res) {
     if (!req.body.status || !validStatus.includes(req.body.status)) {
       return res.status(400).send('Invalid status');
     }
+
     if (req.body.note && req.body.note.length > 500) {
       return res.status(400).send('Note cannot exceed 500 characters');
     }
+
     await updateOneWatchlistItem(req.params.id, userId, req.body.status, req.body.note);
     res.redirect('/watchlist');
   } catch (err) {
@@ -123,11 +124,10 @@ async function update(req, res) {
   }
 };
 
-
 async function remove(req, res) {
   try {
     const userId = getCurrentUserId(req);
-    await removeOneWatchlistItem( req.params.id, userId );
+    await removeOneWatchlistItem(req.params.id, userId);
     res.redirect('/watchlist');
   } catch (err) {
     res.status(500).send('Delete failed');
