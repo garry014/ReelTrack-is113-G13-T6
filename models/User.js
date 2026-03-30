@@ -43,5 +43,25 @@ userSchema.methods.correctPassword = async function (candidatePassword, userPass
 };
 
 const User = mongoose.model('User', userSchema);
+User.createUser = (data) => {
+    const user = new User(data);
+    return user.save();
+};
+
+User.findUserById = (id) => {
+    return User.findById(id);
+};
+
+User.findUserByIdWithPassword = (id) => {
+    return User.findById(id).select('+passwordHash');
+};
+
+User.findUserByEmailWithPassword = (email) => {
+    return User.findOne({ email }).select('+passwordHash');
+};
+
+User.deleteUserById = (id) => {
+    return User.findByIdAndDelete(id);
+};
 
 module.exports = User;

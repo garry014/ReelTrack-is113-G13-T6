@@ -37,7 +37,6 @@ const reviewSchema = new mongoose.Schema(
 reviewSchema.index({ owner: 1, movieId: 1 }, { unique: true });
 
 const Review = mongoose.model('Review', reviewSchema);
-exports.Review = Review;
 
 exports.getAverageRating = async (movieId) => {
     const result = await Review.aggregate([

@@ -12,14 +12,14 @@
             <% if (currentUser.role==='admin' ) { %>
                 <a href="/movies/new">Add Movie</a>
                 <a href="/genres/new">Add Genre</a>
-                
+
                 <% } %>
                     <% } %>
     </nav>
 
     <div class="nav-cta">
         <% if (currentUser) { %>
-            <a href="/profile" class="btn btn-ghost" id="nav-profile">
+            <a href="/user/profile" class="btn btn-ghost" id="nav-profile">
                 👤 <%= currentUser.name %>
             </a>
             <form action="/logout" method="POST" style="display: inline;">

@@ -57,6 +57,10 @@ async function createReview(req, res) {
     } catch (err) {
         const MOVIE = await Movie.findOneMovie(req.params.movieId);
         console.error(err.message);
+        if (err.code === 11000) {
+            return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: 'You have already reviewed this movie' });
+        }
+        req.session.messages = { error: 'Sorry, something went wrong. Please try again.' };
         return res.render('reviews/new', { movie: MOVIE, rating, reviewText, isAnonymous, error: err.message });
     }
 }

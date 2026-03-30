@@ -1,40 +1,12 @@
-<%- include('./layout/base', { pageTitle: 'My Profile' }) %>
-<%- include('./layout/header') %>
+<%- include('../layout/base', { pageTitle: 'My Profile' }) %>
+<%- include('../layout/header') %>
 
 <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
 
-    <!-- ── FLASH MESSAGES ── -->
-    <% if (locals.messages && messages.success) { %>
-        <div class="alert alert-success fade-in-up" style="
-            max-width: 560px;
-            margin-bottom: 1.25rem;
-            background: rgba(16,185,129,0.12);
-            border: 1px solid rgba(16,185,129,0.3);
-            color: #34d399;
-            padding: 0.85rem 1.1rem;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 500;">
-            ✅ <%= messages.success %>
-        </div>
-    <% } %>
-    <% if (locals.messages && messages.error) { %>
-        <div class="alert alert-error fade-in-up" style="
-            max-width: 560px;
-            margin-bottom: 1.25rem;
-            background: rgba(229,9,20,0.12);
-            border: 1px solid rgba(229,9,20,0.3);
-            color: #f87171;
-            padding: 0.85rem 1.1rem;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 500;">
-            ⚠️ <%= messages.error %>
-        </div>
-    <% } %>
+
 
     <!-- ── PROFILE CARD ── -->
-    <div class="card fade-in-up" style="max-width: 560px; margin-bottom: 2.5rem;">
+    <div class="card fade-in-up" style="max-width: 560px; margin: 0 auto 2.5rem;">
         <div style="display: flex; align-items: center; gap: 1.25rem;">
             <div style="
                 width: 60px; height: 60px; border-radius: 50%;
@@ -62,7 +34,7 @@
 
     <!-- ── ITEMS ── -->
     <% if (typeof items !== 'undefined' && items.length > 0) { %>
-        <div class="fade-in-up" style="animation-delay: 0.1s;">
+        <div class="fade-in-up" style="animation-delay: 0.1s; max-width: 560px; margin: 0 auto 2.5rem;">
             <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">My Items</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;">
                 <% items.forEach(item => { %>
@@ -80,7 +52,7 @@
     <% } %>
 
     <!-- ── UPDATE PROFILE FORM ── -->
-    <div class="card fade-in-up" style="max-width: 560px; margin-top: 2rem; animation-delay: 0.15s;">
+    <div class="card fade-in-up" style="max-width: 560px; margin: 2rem auto 0; animation-delay: 0.15s;">
 
         <div style="margin-bottom: 1.25rem;">
             <span class="section-label">Edit Profile</span>
@@ -165,7 +137,7 @@
     <!-- ── DELETE ACCOUNT SECTION ── -->
     <div class="card fade-in-up" style="
         max-width: 560px;
-        margin-top: 2rem;
+        margin: 2rem auto 0;
         animation-delay: 0.2s;
         border-color: rgba(229,9,20,0.25);
         background: rgba(229,9,20,0.04);">
@@ -220,4 +192,4 @@
 
 </div>
 
-<%- include('./layout/footer') %>
+<%- include('../layout/footer') %>
