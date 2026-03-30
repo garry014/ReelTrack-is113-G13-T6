@@ -31,10 +31,14 @@ async function create(req, res) {
       return res.status(400).render('watchlist/new', { error: 'Please select a movie from the suggestions list.' });
     }
 
+    if (req.body.note && req.body.note.length > 500) {
+      return res.status(400).render('watchlist/new', { error: 'Notes cannot exceed 500 characters.' });
+    }
+
     const movie = await findOneMovie(req.body.movieId);
 
     if (!movie) {
-      const safeBack = req.get('Referer') || `/movies/${movie._id}`;
+      const safeBack = req.get('Referer') || `/movies`;
       return res.redirect(safeBack);
     }
 
@@ -97,6 +101,7 @@ async function showEdit(req, res) {
 
 async function checkInWatchlist(req, res) {
   try {
+    if (!req.query.movieId) return res.json({ inWatchlist: false });
     const exists = await Watchlist.exists({
       movieId: req.query.movieId,
       owner: req.session.userId
@@ -110,15 +115,20 @@ async function checkInWatchlist(req, res) {
 async function update(req, res) {
   try {
     const userId = getCurrentUserId(req);
-    await Watchlist.findOneAndUpdate(
-      { _id: req.params.id, owner: userId },
-      { status: req.body.status, notes: req.body.note }
-    );
+    const validStatus = ['want-to-watch', 'watching', 'watched'];
+    if (!req.body.status || !validStatus.includes(req.body.status)) {
+      return res.status(400).send('Invalid status');
+    }
+    if (req.body.note && req.body.note.length > 500) {
+      return res.status(400).send('Note cannot exceed 500 characters');
+    }
+    await updateOneWatchlistItem(req.params.id, userId, req.body.status, req.body.note);
     res.redirect('/watchlist');
   } catch (err) {
     res.status(400).send('Update failed');
   }
 };
+
 
 async function remove(req, res) {
   try {
