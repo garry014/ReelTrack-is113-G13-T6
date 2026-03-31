@@ -132,8 +132,18 @@
                                 <p><%= reply.commentText %></p>
                             </div>
 
+                            <form id="edit-form-<%= reply._id %>" action="/comments/<%= reply._id %>/edit" method="POST" style="display: <%= (formData && formData.editCommentId === reply._id.toString()) ? 'block' : 'none' %>; margin-bottom: 1rem;">
+                                <textarea name="commentText" required style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 0.5rem;"><%= (formData && formData.editCommentId === reply._id.toString()) ? formData.commentText : reply.commentText %></textarea>
+                                <div style="text-align: right;">
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('edit-form-<%= reply._id %>').style.display='none'; document.getElementById('reply-text-<%= reply._id %>').style.display='block';">Cancel</button>
+                                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                </div>
+                            </form>
+
                             <% if (currentUser && currentUser._id.toString() === reply.owner._id.toString()) { %>
                                 <div class="review-actions">
+                                    <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('edit-form-<%= reply._id %>').style.display='block'; document.getElementById('reply-text-<%= reply._id %>').style.display='none';">✎ Edit</button>
+                                    
                                     <form action="/comments/<%= reply._id %>/delete" method="POST" style="display:inline;">
                                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this reply?')">✕ Delete</button>
                                     </form>
