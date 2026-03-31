@@ -35,7 +35,7 @@
             <form action="/comments" method="POST" style="background: var(--surface); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 2rem;">
                 <input type="hidden" name="movieId" value="<%= MOVIE_ID %>">
                 <textarea name="commentText" placeholder="Share your thoughts about this movie..." required 
-                    style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 1rem;"></textarea>
+                    style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 1rem;"><%= (formData && !formData.parentCommentId && !formData.editCommentId) ? formData.commentText : '' %></textarea>
                 <div style="text-align: right;">
                     <button type="submit" class="btn btn-primary">Post Comment</button>
                 </div>
@@ -77,8 +77,8 @@
                             <p><%= comment.commentText %></p>
                         </div>
 
-                        <form id="edit-form-<%= comment._id %>" action="/comments/<%= comment._id %>/edit" method="POST" style="display: none; margin-bottom: 1rem;">
-                            <textarea name="commentText" required style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 0.5rem;"><%= comment.commentText %></textarea>
+                        <form id="edit-form-<%= comment._id %>" action="/comments/<%= comment._id %>/edit" method="POST" style="display: <%= (formData && formData.editCommentId === comment._id.toString()) ? 'block' : 'none' %>; margin-bottom: 1rem;">
+                            <textarea name="commentText" required style="width: 100%; min-height: 80px; padding: 1rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); font-family: inherit; resize: vertical; margin-bottom: 0.5rem;"><%= (formData && formData.editCommentId === comment._id.toString()) ? formData.commentText : comment.commentText %></textarea>
                             <div style="text-align: right;">
                                 <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('edit-form-<%= comment._id %>').style.display='none'; document.getElementById('comment-text-<%= comment._id %>').style.display='block';">Cancel</button>
                                 <button type="submit" class="btn btn-primary btn-sm">Save</button>
@@ -96,11 +96,11 @@
                             <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('reply-form-<%= comment._id %>').style.display='block';">↩ Reply</button>
                         </div>
 
-                        <form id="reply-form-<%= comment._id %>" action="/comments" method="POST" style="display: none; margin-top: 1rem; margin-left: 2rem; border-left: 2px solid #555; padding-left: 1rem;">
+                        <form id="reply-form-<%= comment._id %>" action="/comments" method="POST" style="display: <%= (formData && formData.parentCommentId === comment._id.toString()) ? 'block' : 'none' %>; margin-top: 1rem; margin-left: 2rem; border-left: 2px solid #555; padding-left: 1rem;">
                             <input type="hidden" name="movieId" value="<%= MOVIE_ID %>">
                             <input type="hidden" name="parentCommentId" value="<%= comment._id %>"> 
                             
-                            <textarea name="commentText" required placeholder="Write a reply..." style="width: 100%; min-height: 60px; padding: 0.8rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 0.5rem;"></textarea>
+                            <textarea name="commentText" required placeholder="Write a reply..." style="width: 100%; min-height: 60px; padding: 0.8rem; border-radius: 8px; background: rgba(0,0,0,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 0.5rem;"><%= (formData && formData.parentCommentId === comment._id.toString()) ? formData.commentText : '' %></textarea>
                             
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <label style="color: var(--text-muted); font-size: 0.875rem; cursor: pointer;">
