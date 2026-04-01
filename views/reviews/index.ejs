@@ -1,4 +1,4 @@
-<%- include('../layout/base', { pageTitle: 'Reviews — ' + MOVIE.title, extraCSS: ['/css/review.css'] }) %>
+<%- include('../layout/base', { pageTitle: 'Reviews — ' + movie.title, extraCSS: ['/css/review.css'] }) %>
     <%- include('../layout/header') %>
 
         <div class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
@@ -6,8 +6,8 @@
             <!-- Movie Details Banner -->
             <div class="movie-banner fade-in-up"
                 style="display: flex; gap: 2rem; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem;">
-                <% if (MOVIE.posterUrl) { %>
-                    <img src="<%= MOVIE.posterUrl %>" alt="<%= MOVIE.title %> poster"
+                <% if (movie.posterUrl) { %>
+                    <img src="<%= movie.posterUrl %>" alt="<%= movie.title %> poster"
                         style="width: 110px; height: 160px; object-fit: cover; border-radius: 10px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
                     <% } else { %>
                         <div
@@ -18,29 +18,29 @@
                                 <span class="section-label">Now Reviewing</span>
                                 <h1
                                     style="font-size: 1.75rem; font-weight: 900; letter-spacing: -0.5px; margin-top: 0.25rem; margin-bottom: 0.5rem;">
-                                    <%= MOVIE.title %>
+                                    <%= movie.title %>
                                 </h1>
                                 <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
                                     <span
                                         style="background: rgba(var(--primary-rgb, 99,102,241),0.15); color: var(--primary); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
-                                        <%= MOVIE.genre %>
+                                        <%= movie.genre %>
                                     </span>
                                     <span
                                         style="background: var(--surface-2); color: var(--text-muted); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem;">📅
-                                        <%= MOVIE.releaseYear %>
+                                        <%= movie.releaseYear %>
                                     </span>
                                     <span
                                         style="background: var(--surface-2); color: var(--text-muted); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem;">🎬
-                                        <%= MOVIE.director %>
+                                        <%= movie.director %>
                                     </span>
                                     <span
                                         style="background: var(--surface-2); color: var(--text-muted); padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.75rem;">⏱
-                                        <%= MOVIE.duration %> min
+                                        <%= movie.duration %> min
                                     </span>
                                 </div>
                                 <p
                                     style="color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                                    <%= MOVIE.synopsis %>
+                                    <%= movie.synopsis %>
                                 </p>
                             </div>
             </div>
@@ -51,7 +51,7 @@
                     <span class="section-label">Movie Reviews</span>
                     <h2 style="font-size: 1.5rem; font-weight: 800;">Community Reviews</h2>
                     <% if (currentUser && !hasReviewed) { %>
-                        <a href="/reviews/new/<%= MOVIE_ID %>" class="btn btn-primary mt-sm" id="write-review-btn">✍
+                        <a href="/reviews/new/<%= movieId %>" class="btn btn-primary mt-sm" id="write-review-btn">✍
                             Write a Review</a>
                         <% } else if (currentUser && hasReviewed) { %>
                             <p class="review-cta-notice mt-sm">✓ You've already reviewed this movie.</p>
@@ -88,7 +88,7 @@
                         <h3>No reviews yet</h3>
                         <p>Be the first to share your thoughts about this film!</p>
                         <% if (currentUser && !hasReviewed) { %>
-                            <a href="/reviews/new/<%= MOVIE_ID %>" class="btn btn-primary" id="write-first-review">Write
+                            <a href="/reviews/new/<%= movieId %>" class="btn btn-primary" id="write-first-review">Write
                                 the first review</a>
                             <% } %>
                     </div>
@@ -147,7 +147,7 @@
             <% if (totalPages> 1) { %>
                 <nav class="pagination" aria-label="Reviews pagination">
                     <% if (currentPage> 1) { %>
-                        <a href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage - 1 %>&limit=<%= limit %>">‹
+                        <a href="/reviews/movie/<%= movieId %>?page=<%= currentPage - 1 %>&limit=<%= limit %>">‹
                             Prev</a>
                         <% } else { %>
                             <span class="disabled">‹ Prev</span>
@@ -159,7 +159,7 @@
                                             <%= i %>
                                         </span>
                                         <% } else { %>
-                                            <a href="/reviews/movie/<%= MOVIE_ID %>?page=<%= i %>&limit=<%= limit %>">
+                                            <a href="/reviews/movie/<%= movieId %>?page=<%= i %>&limit=<%= limit %>">
                                                 <%= i %>
                                             </a>
                                             <% } %>
@@ -167,7 +167,7 @@
 
                                                     <% if (currentPage < totalPages) { %>
                                                         <a
-                                                            href="/reviews/movie/<%= MOVIE_ID %>?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next
+                                                            href="/reviews/movie/<%= movieId %>?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next
                                                             ›</a>
                                                         <% } else { %>
                                                             <span class="disabled">Next ›</span>
