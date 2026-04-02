@@ -29,10 +29,16 @@ async function showMoviesByGenre(req, res) {
         const allGenres = await Genre.retrieveAllGenres();
         const selectedGenre = req.query.genre || '';
         let allMovies = [];
+        let inputError = undefined;
 
         if (selectedGenre) {
-            allMovies = await Movie.retrieveAllMovies();
-            allMovies = allMovies.filter(movie => movie.genre === selectedGenre);
+            const allMoviesFromDb = await Movie.retrieveAllMovies();
+            allMovies = allMoviesFromDb.filter(movie => movie.genre === selectedGenre);
+
+            // check if the given input is one of the data in allMovies
+            if (allMovies.length === 0) {
+                res.session.messages = { error: `No movies found for the genre "${selectedGenre}".` };
+            }
         }
 
         res.render('movies/filter', { allGenres, allMovies, selectedGenre });
@@ -44,10 +50,10 @@ async function showMoviesByGenre(req, res) {
 
 async function addOneMovie(req, res) {
     const checkInputError = validateInput(req)
-    if(checkInputError.length > 0){
+    if (checkInputError.length > 0) {
         const allActiveGenre = await Genre.retrieveActiveGenres();
         res.render('movies/new', { inputError: checkInputError, formValues: req.body, allActiveGenre })
-    }else{
+    } else {
         try {
             await Movie.createOneMovie(req)
             req.session.messages = { success: 'Movie added successfully!' };
@@ -60,12 +66,12 @@ async function addOneMovie(req, res) {
     }
 }
 
-async function showAddForm(req, res){
-    try{
+async function showAddForm(req, res) {
+    try {
         const allActiveGenre = await Genre.retrieveActiveGenres();
-        res.render('movies/new', {inputError:[], formValues: undefined, allActiveGenre});
-    } catch(error){
-        res.render('error', {message: 'Unable to retrieve Genre options'})
+        res.render('movies/new', { inputError: [], formValues: undefined, allActiveGenre });
+    } catch (error) {
+        res.render('error', { message: 'Unable to retrieve Genre options' })
     }
 }
 
@@ -73,7 +79,7 @@ async function showEditForm(req, res) {
     try {
         const movie = await Movie.findOneMovie(req.params.id);
         if (!movie) return res.render('error', { message: 'Movie not found' });
-         const allActiveGenre = await Genre.retrieveActiveGenres();
+        const allActiveGenre = await Genre.retrieveActiveGenres();
         res.render('movies/edit', { movie, allActiveGenre });
     }
     catch (error) {
@@ -83,9 +89,9 @@ async function showEditForm(req, res) {
 
 async function editMovie(req, res) {
     const checkInputError = validateInput(req)
-    if (checkInputError.length > 0){
-        res.json({inputError: checkInputError})
-    }else{
+    if (checkInputError.length > 0) {
+        res.json({ inputError: checkInputError })
+    } else {
         try {
             await Movie.updateOneMovie(req.params.id, req.body)
             res.json({ message: 'Success, Movie updated', redirect: `/movies/${req.params.id}` })
@@ -106,31 +112,31 @@ async function deleteMovie(req, res) {
     }
 }
 
-function validateInput(req){
+function validateInput(req) {
     let errors = []
     const { title, director, genre, releaseYear, duration, posterUrl, synopsis } = req.body
     const currentYear = new Date().getFullYear();
     if (isNaN(releaseYear) || !Number.isInteger(Number(releaseYear))
         || releaseYear < 1950 || releaseYear > currentYear) {
-            errors.push(`Release Year must be a number and between year 1950 and ${currentYear} (inclusive)`)
+        errors.push(`Release Year must be a number and between year 1950 and ${currentYear} (inclusive)`)
     }
     if (isNaN(duration) || !Number.isInteger(Number(duration)) || duration < 1) {
         errors.push("Duration must be a number more than 0")
     }
 
-    if (!title || !title.trim()){
+    if (!title || !title.trim()) {
         errors.push('Title is required.');
     }
 
-    if (!genre || !genre.trim()){
+    if (!genre || !genre.trim()) {
         errors.push('Genre is required.');
     }
 
-    if (!director || !director.trim()){
+    if (!director || !director.trim()) {
         errors.push('Director is required.');
     }
 
-    if (!synopsis || !synopsis.trim()){
+    if (!synopsis || !synopsis.trim()) {
         errors.push('Synopsis is required.');
     }
 
