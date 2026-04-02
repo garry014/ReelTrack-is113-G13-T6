@@ -11,23 +11,7 @@ async function showAllGenres(req, res) {
     }
 }
 
-async function showGenresWithMovies(req, res) {
-    try {
-        const allGenres = await Genre.retrieveAllGenres();
-        const selectedGenre = req.query.genre || '';
-        let allMovies = [];
 
-        if (selectedGenre) {
-            allMovies = await Movie.retrieveAllMovies();
-            allMovies = allMovies.filter(movie => movie.genre === selectedGenre);
-        }
-
-        res.render('genres/filter', { allGenres, allMovies, selectedGenre });
-    }
-    catch (error) {
-        res.render('error', { message: 'Unable to filter movies by genre' });
-    }
-}
 
 function showAddForm(req, res) {
     res.render('genres/new', { inputError: undefined, formValues: undefined });
@@ -133,7 +117,6 @@ function validateInput(req) {
 
 module.exports = {
     showAllGenres,
-    showGenresWithMovies,
     showAddForm,
     addOneGenre,
     getOneGenre,

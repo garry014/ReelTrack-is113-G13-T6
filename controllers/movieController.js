@@ -24,6 +24,24 @@ async function getOneMovie(req, res) {
     }
 }
 
+async function showMoviesByGenre(req, res) {
+    try {
+        const allGenres = await Genre.retrieveAllGenres();
+        const selectedGenre = req.query.genre || '';
+        let allMovies = [];
+
+        if (selectedGenre) {
+            allMovies = await Movie.retrieveAllMovies();
+            allMovies = allMovies.filter(movie => movie.genre === selectedGenre);
+        }
+
+        res.render('movies/filter', { allGenres, allMovies, selectedGenre });
+    }
+    catch (error) {
+        res.render('error', { message: 'Unable to filter movies by genre' });
+    }
+}
+
 async function addOneMovie(req, res) {
     const checkInputError = validateInput(req)
     if(checkInputError.length > 0){
@@ -124,6 +142,7 @@ function validateInput(req){
 
 module.exports = {
     showAllMovies,
+    showMoviesByGenre,
     getOneMovie,
     addOneMovie,
     showAddForm,
