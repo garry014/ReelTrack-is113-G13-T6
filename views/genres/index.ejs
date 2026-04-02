@@ -1,69 +1,115 @@
 <%- include('../layout/base', { pageTitle: 'All Genres' }) %>
-<%- include('../layout/header') %>
+    <%- include('../layout/header') %>
 
-<div class="container">
-    <section class="movies-section">
-        <span class="section-label">Browse</span>
-        <h2>All Genres</h2>
-        <div class="section-divider"></div>
+        <div class="container">
+            <section class="movies-section">
+                <span class="section-label">Browse</span>
+                <h2>All Genres</h2>
+                <div class="section-divider"></div>
 
-        <% if (currentUser && currentUser.role === 'admin') { %>
-            <div style="margin-bottom: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-                <a href="/genres/new" class="btn btn-primary">+ Add New Genre</a>
-                <a href="/genres/filter/movies" class="btn btn-ghost">Filter Movies by Genre</a>
-            </div>
-        <% } else { %>
-            <div style="margin-bottom: 1.25rem;">
-                <a href="/genres/filter/movies" class="btn btn-ghost">Filter Movies by Genre</a>
-            </div>
-        <% } %>
-
-
-
-        <% if (allGenres.length === 0) { %>
-            <div class="empty-state">
-                <div class="empty-icon">🏷️</div>
-                <h3>No genres yet</h3>
-                <p>No genres have been added yet.</p>
-            </div>
-        <% } else { %>
-            <div class="movies-container">
-                <% allGenres.forEach((genre) => { %>
-                    <div class="movie-card" id="genre-<%= genre._id %>" style="text-decoration: none;">
-                        <a href="/genres/<%= genre._id %>" style="text-decoration: none; color: inherit;">
-                            <div class="movie-card-info">
-                                <p class="movie-card-title"><%= genre.name %></p>
-                                <p class="movie-card-meta"><%= genre.description %></p>
-                                <p class="movie-card-meta"><%= genre.isActive ? 'Active' : 'Inactive' %></p>
-                            </div>
-                        </a>
-
-                        <% if (currentUser && currentUser.role === 'admin') { %>
-                            <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                                <a href="/genres/<%= genre._id %>/edit" class="btn btn-warning">Edit</a>
-                                <button type="button" class="btn btn-ghost" onclick="deleteGenre('<%= genre._id %>')">Delete</button>
-                            </div>
-                        <% } %>
+                <% if (currentUser && currentUser.role==='admin' ) { %>
+                    <div style="margin-bottom: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                        <a href="/genres/new" class="btn btn-primary">+ Add New Genre</a>
                     </div>
-                <% }) %>
-            </div>
-        <% } %>
-    </section>
-</div>
+                    <% } else { %>
+                        <div style="margin-bottom: 1.25rem;">
+                            <a href="/genres/filter/movies" class="btn btn-ghost">Filter Movies by Genre</a>
+                        </div>
+                        <% } %>
 
-<script>
-    async function deleteGenre(id) {
-        const confirmed = confirm('Are you sure you want to delete this genre?');
-        if (!confirmed) return;
 
-        const response = await fetch(`/genres/${id}`, {
-            method: 'DELETE'
-        });
 
-        const result = await response.json();
-        alert(result.message);
-        window.location.href = result.redirect;
-    }
-</script>
+                            <% if (allGenres.length===0) { %>
+                                <div class="empty-state">
+                                    <div class="empty-icon">🏷️</div>
+                                    <h3>No genres yet</h3>
+                                    <p>No genres have been added yet.</p>
+                                </div>
+                                <% } else { %>
+                                    <div class="movies-container">
+                                        <% allGenres.forEach((genre)=> { %>
+                                            <div class="movie-card" id="genre-<%= genre._id %>"
+                                                style="text-decoration: none; display: flex; flex-direction: column; justify-content: space-between;">
+                                                <a href="/genres/<%= genre._id %>"
+                                                    style="text-decoration: none; color: inherit; flex: 1;">
+                                                    <div class="movie-card-info">
+                                                        <p class="movie-card-title">
+                                                            <%= genre.name %>
+                                                        </p>
+                                                        <p class="movie-card-meta">
+                                                            <%= genre.description %>
+                                                        </p>
+                                                        <span style="
+                                                            display: inline-block;
+                                                            margin-top: 0.5rem;
+                                                            padding: 0.25rem 0.75rem;
+                                                            border-radius: 999px;
+                                                            font-size: 0.75rem;
+                                                            font-weight: 600;
+                                                            letter-spacing: 0.04em;
+                                                            background-color: <%= genre.isActive ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)' %>;
+                                                            color: <%= genre.isActive ? '#4ade80' : '#f87171' %>;
+                                                            border: 1px solid <%= genre.isActive ? 'rgba(74,222,128,0.4)' : 'rgba(248,113,113,0.4)' %>;
+                                                        ">
+                                                            <%= genre.isActive ? '● Active' : '● Inactive' %>
+                                                        </span>
+                                                    </div>
+                                                </a>
 
-<%- include('../layout/footer') %>
+                                                <% if (currentUser && currentUser.role==='admin' ) { %>
+                                                    <div
+                                                        style="display: flex; gap: 0.6rem; margin-top: 1.1rem; flex-wrap: wrap; justify-content: center;">
+                                                        <a href="/genres/<%= genre._id %>/edit" style="
+                                                                display: inline-block;
+                                                                padding: 0.45rem 1.1rem;
+                                                                border-radius: 6px;
+                                                                font-size: 0.85rem;
+                                                                font-weight: 600;
+                                                                text-decoration: none;
+                                                                background-color: rgba(234,179,8,0.15);
+                                                                color: #facc15;
+                                                                border: 1px solid rgba(250,204,21,0.35);
+                                                                transition: background 0.2s, transform 0.15s;
+                                                            "
+                                                            onmouseover="this.style.backgroundColor='rgba(234,179,8,0.28)'; this.style.transform='translateY(-1px)'"
+                                                            onmouseout="this.style.backgroundColor='rgba(234,179,8,0.15)'; this.style.transform='translateY(0)'">Edit</a>
+                                                        <button type="button" onclick="deleteGenre('<%= genre._id %>')"
+                                                            style="
+                                                                display: inline-block;
+                                                                padding: 0.45rem 1.1rem;
+                                                                border-radius: 6px;
+                                                                font-size: 0.85rem;
+                                                                font-weight: 600;
+                                                                cursor: pointer;
+                                                                background-color: rgba(239,68,68,0.12);
+                                                                color: #f87171;
+                                                                border: 1px solid rgba(248,113,113,0.35);
+                                                                transition: background 0.2s, transform 0.15s;
+                                                            "
+                                                            onmouseover="this.style.backgroundColor='rgba(239,68,68,0.25)'; this.style.transform='translateY(-1px)'"
+                                                            onmouseout="this.style.backgroundColor='rgba(239,68,68,0.12)'; this.style.transform='translateY(0)'">Delete</button>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                    <% } %>
+            </section>
+        </div>
+
+        <script>
+            async function deleteGenre(id) {
+                const confirmed = confirm('Are you sure you want to delete this genre?');
+                if (!confirmed) return;
+
+                const response = await fetch(`/genres/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                window.location.href = result.redirect;
+            }
+        </script>
+
+        <%- include('../layout/footer') %>

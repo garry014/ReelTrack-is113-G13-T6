@@ -4,7 +4,10 @@
         <div class="container">
             <section class="movies-section">
                 <span class="section-label">Browse</span>
-                <h2>All Movies</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="margin: 0;">All Movies</h2>
+                    <a href="/genres/filter/movies" class="btn btn-ghost">Filter Movies by Genre</a>
+                </div>
                 <div class="section-divider"></div>
 
                 <% if (allMovies.length===0) { %>
