@@ -1,4 +1,4 @@
-<%- include('../layout/base', { pageTitle: 'Edit Review — ' + REVIEW.movieId.title }) %>
+<%- include('../layout/base', { pageTitle: 'Edit Review — ' + review.movieId.title }) %>
     <%- include('../layout/header') %>
 
         <div class="container-sm" style="padding-top: 2.5rem; padding-bottom: 4rem;">
@@ -6,7 +6,7 @@
                 <span class="section-label">Reviews</span>
                 <h1 style="font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px;">Edit Your Review</h1>
                 <p class="text-muted text-sm mt-sm">Updating review for <strong style="color: var(--text);">
-                        <%= REVIEW.movieId.title %>
+                        <%= review.movieId.title %>
                     </strong>.</p>
             </div>
 
@@ -18,14 +18,14 @@
                     </div>
                     <% } %>
 
-                        <form action="/reviews/update/<%= REVIEW._id %>" method="POST" id="edit-review-form">
-                            <input type="hidden" name="movieId" value="<%= REVIEW.movieId._id %>">
+                        <form action="/reviews/update/<%= review._id %>" method="POST" id="edit-review-form">
+                            <input type="hidden" name="movieId" value="<%= review.movieId._id %>">
 
                             <div class="form-group">
                                 <label for="rating">Your Rating</label>
                                 <% const ratingScale=["Excellent", "Good" , "Average" , "Poor" , "Terrible" ] %>
                                     <% const selectedRating=typeof(rating) !=='undefined' ? parseInt(rating) :
-                                        REVIEW.rating %>
+                                        review.rating %>
                                         <select name="rating" id="rating" required>
                                             <% for (let i=5; i>= 1; i--) { %>
                                                 <option value="<%= i %>" <%=selectedRating===i ? 'selected' : '' %>>
@@ -40,12 +40,12 @@
                             <div class="form-group">
                                 <label for="reviewText">Your Review</label>
                                 <textarea name="reviewText" id="reviewText" rows="6"
-                                    required><%= typeof(reviewText) !=='undefined' ? reviewText : REVIEW.reviewText %></textarea>
+                                    required><%= typeof(reviewText) !=='undefined' ? reviewText : review.reviewText %></textarea>
                             </div>
 
                             <div class="form-group" style="display: flex; align-items: center; gap: 0.6rem;">
                                 <% const selectedIsAnonymous=typeof(isAnonymousBool) !=='undefined' ?
-                                    parseInt(isAnonymousBool) : REVIEW.isAnonymous %>
+                                    parseInt(isAnonymousBool) : review.isAnonymous %>
                                     <input type="checkbox" name="isAnonymous" id="isAnonymous" value="on"
                                         <%=selectedIsAnonymous ? 'checked' : '' %>>
                                     <label for="isAnonymous"
@@ -57,7 +57,7 @@
                             <div class="divider"></div>
 
                             <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end;">
-                                <a href="/reviews/movie/<%= REVIEW.movieId._id %>" class="btn btn-ghost"
+                                <a href="/reviews/movie/<%= review.movieId._id %>" class="btn btn-ghost"
                                     id="cancel-edit-review">Cancel</a>
                                 <button type="submit" class="btn btn-warning" id="update-review">✎ Update
                                     Review</button>

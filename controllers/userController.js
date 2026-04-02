@@ -1,5 +1,40 @@
 const User = require('../models/User');
 
+const showRegister = (req, res) => {
+    res.render('users/register');
+};
+
+// Accepts alphabets and spaces only
+const alphaOnly = (name) => {
+    return /^[a-zA-Z\s]+$/.test(name);
+}
+
+const processRegister = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        if (name && name.trim().length > 0 && !alphaOnly(name)) {
+            return res.render('users/register', { name, email, messages: { error: 'Name must contain alphabets only.' } });
+        }
+
+        if (!password || password.length < 8) {
+            return res.render('users/register', { name, email, messages: { error: 'Password must be at least 8 characters.' } });
+        }
+
+        await User.createUser({ name, email, passwordHash: password });
+
+        req.session.messages = { success: 'Registration successful! Please login.' };
+        res.redirect('/login');
+    } catch (err) {
+        const { name, email } = req.body;
+        let errorMessage = err.message;
+        if (err.code === 11000) {
+            errorMessage = 'An account with that email already exists.';
+        }
+        return res.render('users/register', { name, email, messages: { error: errorMessage } });
+    }
+};
+
 const getUserProfile = async (req, res) => {
     try {
         const user = await User.findUserById(req.session.userId);
@@ -26,10 +61,13 @@ const editUserProfile = async (req, res) => {
             return res.redirect('/login');
         }
 
+        if (name && name.trim().length > 0 && !alphaOnly(name)) {
+            return res.render('users/profile', { user, name, email, messages: { error: 'Name must contain alphabets only.' } });
+        }
+
         const isCorrect = await user.correctPassword(currentPassword, user.passwordHash);
         if (!isCorrect) {
-            req.session.messages = { error: 'Current password is incorrect.' };
-            return res.redirect('/user/profile');
+            return res.render('users/profile', { user, name, email, messages: { error: 'Current password is incorrect.' } });
         }
 
         user.name = name.trim() || user.name;
@@ -37,12 +75,10 @@ const editUserProfile = async (req, res) => {
 
         if (newPassword) {
             if (newPassword.length < 8) {
-                req.session.messages = { error: 'New password must be at least 8 characters.' };
-                return res.redirect('/user/profile');
+                return res.render('users/profile', { user, name, email, messages: { error: 'New password must be at least 8 characters.' } });
             }
             if (newPassword !== confirmPassword) {
-                req.session.messages = { error: 'New passwords do not match.' };
-                return res.redirect('/user/profile');
+                return res.render('users/profile', { user, name, email, messages: { error: 'New passwords do not match.' } });
             }
             user.passwordHash = newPassword; // pre('save') hook will hash it
         }
@@ -54,12 +90,12 @@ const editUserProfile = async (req, res) => {
         res.redirect('/user/profile');
 
     } catch (err) {
+        let errorMessage = err.message || 'Update failed.';
         if (err.code === 11000) {
-            req.session.messages = { error: 'That email is already in use.' };
-        } else {
-            req.session.messages = { error: err.message || 'Update failed.' };
+            errorMessage = 'That email is already in use.';
         }
-        res.redirect('/user/profile');
+        const user = await User.findUserByIdWithPassword(req.session.userId);
+        return res.render('users/profile', { user, name: req.body.name, email: req.body.email, messages: { error: errorMessage } });
     }
 };
 
@@ -84,7 +120,8 @@ const deleteUserProfile = async (req, res) => {
         await User.deleteUserById(req.session.userId);
 
         req.session.destroy(() => {
-            res.redirect('/register');
+            req.session.messages = { success: 'Account deleted successfully!' };
+            res.redirect('/login');
         });
 
     } catch (err) {
@@ -94,6 +131,8 @@ const deleteUserProfile = async (req, res) => {
 };
 
 module.exports = {
+    showRegister,
+    processRegister,
     getUserProfile,
     editUserProfile,
     deleteUserProfile

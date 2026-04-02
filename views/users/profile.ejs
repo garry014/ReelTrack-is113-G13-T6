@@ -73,7 +73,7 @@
                     type="text"
                     id="edit-name"
                     name="name"
-                    value="<%= user.name %>"
+                    value="<%= typeof name !== 'undefined' ? name : user.name %>"
                     placeholder="Your full name"
                     required>
             </div>
@@ -84,7 +84,7 @@
                     type="email"
                     id="edit-email"
                     name="email"
-                    value="<%= user.email %>"
+                    value="<%= typeof email !== 'undefined' ? email : user.email %>"
                     placeholder="you@example.com"
                     required>
             </div>

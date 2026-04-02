@@ -3,6 +3,10 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const { isLoggedIn } = require('../middleware/authMiddleware');
 
+// ─── CREATE ────────────────────────────────────────────
+router.get('/register', userController.showRegister);
+router.post('/register', userController.processRegister);
+
 // ─── READ ───────────────────────────────────────────────
 router.get('/profile', isLoggedIn, userController.getUserProfile);
 
