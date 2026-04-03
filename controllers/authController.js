@@ -18,7 +18,7 @@ const processLogin = async (req, res) => {
         }
         req.session.userId = user._id;
         req.session.userName = user.name;
-        console.log('Session after login:', req.session);
+        // console.log('Session after login:', req.session);
         req.session.messages = { success: `Welcome back, ${user.name}!` };
         res.redirect('/movies');
     } catch (err) {

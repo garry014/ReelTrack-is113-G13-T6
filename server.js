@@ -6,7 +6,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: './config.env' });
 
 const server = express();
 
