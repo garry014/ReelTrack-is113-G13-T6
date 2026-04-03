@@ -1,42 +1,64 @@
 const User = require('../models/User');
 
+// ── Validation helpers ────────────────────────────────────────────────────────
+
+const alphaOnly = (name) => /^[a-zA-Z\s]+$/.test(name);
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+
+// Validates name, email, and optionally password
+// Pass `password: undefined` to skip password validation (e.g. profile edit)
+// Returns an error string, or null if all fields are valid
+function validateUserFields({ name, email, password } = {}) {
+    if (!name || name.trim().length === 0) {
+        return 'Please provide a name';
+    }
+    if (!alphaOnly(name)) {
+        return 'Name must contain alphabets only.';
+    }
+    if (!email || email.trim().length === 0) {
+        return 'Please provide an email';
+    }
+    if (!emailRegex.test(email)) {
+        return 'Please fill in a valid email address';
+    }
+    if (password !== undefined) {
+        if (!password) {
+            return 'Please provide a password';
+        }
+        if (password.length < 8) {
+            return 'Password must be at least 8 characters.';
+        }
+    }
+    return null;
+}
+
+
+// Validates a new password and its confirmation
+// Returns an error string, or null if valid
+function validateNewPassword(newPassword, confirmPassword) {
+    if (newPassword.length < 8) {
+        return 'New password must be at least 8 characters.';
+    }
+    if (newPassword !== confirmPassword) {
+        return 'New passwords do not match.';
+    }
+    return null;
+}
+
+// ── Controllers ───────────────────────────────────────────────────────────────
+
 const showRegister = (req, res) => {
     res.render('users/register');
 };
-
-// Accepts alphabets and spaces only
-const alphaOnly = (name) => {
-    return /^[a-zA-Z\s]+$/.test(name);
-}
-
-const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const processRegister = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        if (!name || name.trim().length === 0) {
-            return res.render('users/register', { name, email, messages: { error: 'Please provide a name' } });
-        }
-
-        if (!alphaOnly(name)) {
-            return res.render('users/register', { name, email, messages: { error: 'Name must contain alphabets only.' } });
-        }
-
-        if (!email || email.trim().length === 0) {
-            return res.render('users/register', { name, email, messages: { error: 'Please provide an email' } });
-        }
-
-        if (!emailRegex.test(email)) {
-            return res.render('users/register', { name, email, messages: { error: 'Please fill in a valid email address' } });
-        }
-
-        if (!password) {
-            return res.render('users/register', { name, email, messages: { error: 'Please provide a password' } });
-        }
-
-        if (password.length < 8) {
-            return res.render('users/register', { name, email, messages: { error: 'Password must be at least 8 characters.' } });
+        const error = validateUserFields({ name, email, password });
+        if (error) {
+            return res.render('users/register', { name, email, messages: { error } });
         }
 
         await User.createUser({ name, email, passwordHash: password });
@@ -45,10 +67,9 @@ const processRegister = async (req, res) => {
         res.redirect('/login');
     } catch (err) {
         const { name, email } = req.body;
-        let errorMessage = err.message;
-        if (err.code === 11000) {
-            errorMessage = 'An account with that email already exists.';
-        }
+        const errorMessage = err.code === 11000
+            ? 'An account with that email already exists.'
+            : err.message;
         return res.render('users/register', { name, email, messages: { error: errorMessage } });
     }
 };
@@ -73,26 +94,15 @@ const editUserProfile = async (req, res) => {
 
         // '+passwordHash' required because of select: false in schema
         const user = await User.findUserByIdWithPassword(req.session.userId);
-
         if (!user) {
             req.session.messages = { error: 'User not found.' };
             return res.redirect('/login');
         }
 
-        if (!name || name.trim().length === 0) {
-            return res.render('users/profile', { user, name, email, messages: { error: 'Please provide a name' } });
-        }
-
-        if (!alphaOnly(name)) {
-            return res.render('users/profile', { user, name, email, messages: { error: 'Name must contain alphabets only.' } });
-        }
-
-        if (!email || email.trim().length === 0) {
-            return res.render('users/profile', { user, name, email, messages: { error: 'Please provide an email' } });
-        }
-
-        if (!emailRegex.test(email)) {
-            return res.render('users/profile', { user, name, email, messages: { error: 'Please fill a valid email address' } });
+        // Validate name & email (skip password, handled separately below)
+        const fieldError = validateUserFields({ name, email });
+        if (fieldError) {
+            return res.render('users/profile', { user, name, email, messages: { error: fieldError } });
         }
 
         const isCorrect = await user.correctPassword(currentPassword, user.passwordHash);
@@ -104,11 +114,9 @@ const editUserProfile = async (req, res) => {
         user.email = email.trim() || user.email;
 
         if (newPassword) {
-            if (newPassword.length < 8) {
-                return res.render('users/profile', { user, name, email, messages: { error: 'New password must be at least 8 characters.' } });
-            }
-            if (newPassword !== confirmPassword) {
-                return res.render('users/profile', { user, name, email, messages: { error: 'New passwords do not match.' } });
+            const pwError = validateNewPassword(newPassword, confirmPassword);
+            if (pwError) {
+                return res.render('users/profile', { user, name, email, messages: { error: pwError } });
             }
             user.passwordHash = newPassword; // pre('save') hook will hash it
         }
@@ -120,10 +128,9 @@ const editUserProfile = async (req, res) => {
         res.redirect('/user/profile');
 
     } catch (err) {
-        let errorMessage = err.message || 'Update failed.';
-        if (err.code === 11000) {
-            errorMessage = 'That email is already in use.';
-        }
+        const errorMessage = err.code === 11000
+            ? 'That email is already in use.'
+            : (err.message || 'Update failed.');
         const user = await User.findUserByIdWithPassword(req.session.userId);
         return res.render('users/profile', { user, name: req.body.name, email: req.body.email, messages: { error: errorMessage } });
     }
@@ -135,7 +142,6 @@ const deleteUserProfile = async (req, res) => {
 
         // '+passwordHash' required because of select: false in schema
         const user = await User.findUserByIdWithPassword(req.session.userId);
-
         if (!user) {
             req.session.messages = { error: 'User not found.' };
             return res.redirect('/login');

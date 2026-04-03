@@ -1,16 +1,15 @@
-const { Comment, updateOneComment, deleteOneComment } = require('../models/Comment');
+const { Comment, createComment, findCommentsByMovieId, findCommentById, updateOneComment, deleteOneComment } = require('../models/Comment');
 const Movie  = require('../models/Movie');
 
 // create Comment
 async function addComment(req, res) {
     try {
-        const comment = new Comment ({
+        await createComment({
             owner : req.session.userId,
             movieId : req.body.movieId,
             commentText : req.body.commentText,
             parentCommentId : req.body.parentCommentId || null
         });
-        await comment.save();
 
         req.session.messages = {success : "Comment added successfuly!"};
         res.redirect(`/comments/movie/${req.body.movieId}`);
@@ -34,7 +33,7 @@ async function showMovieComment(req, res) {
         
         const movie = await Movie.findOneMovie(movieId);
         
-        const comments = await Comment.find({ movieId: movieId }).populate('owner');
+        const comments = await findCommentsByMovieId(movieId);
         
         const formData = req.session.formData || {};
         delete req.session.formData; // Clear it after retrieving
@@ -55,7 +54,7 @@ async function showMovieComment(req, res) {
 async function editComment(req, res) {
     try{
         const commentId = req.params.id;
-        const comment = await Comment.findById(commentId);
+        const comment = await findCommentById(commentId);
         
         if (!comment) {
             req.session.messages = { error : 'Comment not found.'};
@@ -88,7 +87,7 @@ async function editComment(req, res) {
 async function deleteComment(req,res) {
     try{
         const commentId = req.params.id;
-        const comment = await Comment.findById(commentId);
+        const comment = await findCommentById(commentId);
 
         if(!comment) {
             req.session.messages = {error:'Comment not found.'};
