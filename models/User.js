@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     passwordHash: {
         type: String,
         required: [true, 'Please provide a password'],
-        select: false  // ✅ Never returned in queries unless explicitly requested
+        select: false  // Never returned in queries unless explicitly requested
     },
     role: {
         type: String,

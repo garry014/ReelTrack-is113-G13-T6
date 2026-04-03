@@ -9,15 +9,33 @@ const alphaOnly = (name) => {
     return /^[a-zA-Z\s]+$/.test(name);
 }
 
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 const processRegister = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        if (name && name.trim().length > 0 && !alphaOnly(name)) {
+        if (!name || name.trim().length === 0) {
+            return res.render('users/register', { name, email, messages: { error: 'Please provide a name' } });
+        }
+
+        if (!alphaOnly(name)) {
             return res.render('users/register', { name, email, messages: { error: 'Name must contain alphabets only.' } });
         }
 
-        if (!password || password.length < 8) {
+        if (!email || email.trim().length === 0) {
+            return res.render('users/register', { name, email, messages: { error: 'Please provide an email' } });
+        }
+
+        if (!emailRegex.test(email)) {
+            return res.render('users/register', { name, email, messages: { error: 'Please fill in a valid email address' } });
+        }
+
+        if (!password) {
+            return res.render('users/register', { name, email, messages: { error: 'Please provide a password' } });
+        }
+
+        if (password.length < 8) {
             return res.render('users/register', { name, email, messages: { error: 'Password must be at least 8 characters.' } });
         }
 
@@ -61,8 +79,20 @@ const editUserProfile = async (req, res) => {
             return res.redirect('/login');
         }
 
-        if (name && name.trim().length > 0 && !alphaOnly(name)) {
+        if (!name || name.trim().length === 0) {
+            return res.render('users/profile', { user, name, email, messages: { error: 'Please provide a name' } });
+        }
+
+        if (!alphaOnly(name)) {
             return res.render('users/profile', { user, name, email, messages: { error: 'Name must contain alphabets only.' } });
+        }
+
+        if (!email || email.trim().length === 0) {
+            return res.render('users/profile', { user, name, email, messages: { error: 'Please provide an email' } });
+        }
+
+        if (!emailRegex.test(email)) {
+            return res.render('users/profile', { user, name, email, messages: { error: 'Please fill a valid email address' } });
         }
 
         const isCorrect = await user.correctPassword(currentPassword, user.passwordHash);
@@ -120,7 +150,6 @@ const deleteUserProfile = async (req, res) => {
         await User.deleteUserById(req.session.userId);
 
         req.session.destroy(() => {
-            req.session.messages = { success: 'Account deleted successfully!' };
             res.redirect('/login');
         });
 
