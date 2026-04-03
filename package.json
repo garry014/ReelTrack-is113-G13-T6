@@ -19,7 +19,6 @@
   "homepage": "https://github.com/garry014/is113-G13-T6#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "connect-mongo": "^6.0.0",
     "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
