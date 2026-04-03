@@ -86,7 +86,7 @@ async function createReview(req, res) {
 async function getReviewsByMovie(req, res) {
     const movieId = req.params.movieId;
     const movie = await fetchMovieById(movieId);
-    
+
     if (!movie) {
         return res.render('error', { message: 'Movie not found' });
     }
@@ -106,7 +106,7 @@ async function getReviewsByMovie(req, res) {
         // Check if the logged-in user has already reviewed this movie
         let hasReviewed = false;
         if (req.session.userId) {
-             hasReviewed = await Review.hasUserReviewed(movieId, req.session.userId);
+            hasReviewed = await Review.hasUserReviewed(movieId, req.session.userId);
         }
 
         res.render('reviews/index', {
@@ -148,8 +148,8 @@ async function updateReview(req, res) {
             const review = await Review.findByIdWithMovie(req.params.id);
             return res.render('reviews/edit', { review, rating, reviewText, isAnonymousBool: isAnonymous, error: errors.join(', ') });
         } catch (error) {
-             console.error(error.message);
-             return res.render('error', { message: 'Review not found' });
+            console.error(error.message);
+            return res.render('error', { message: 'Review not found' });
         }
     }
 
@@ -162,8 +162,8 @@ async function updateReview(req, res) {
             const review = await Review.findByIdWithMovie(req.params.id);
             return res.render('reviews/edit', { review, rating, reviewText, isAnonymousBool: isAnonymous, error: error.message });
         } catch (innerError) {
-             console.error(innerError.message);
-             return res.render('error', { message: 'Error updating review' });
+            console.error(innerError.message);
+            return res.render('error', { message: 'Error updating review' });
         }
     }
 }
@@ -176,8 +176,8 @@ async function deleteReview(req, res) {
         req.session.messages = { success: 'Review deleted successfully' };
         res.redirect(`/reviews/movie/${movieId}`);
     } catch (error) {
-         console.error(error.message);
-         return res.render('error', { message: 'Error deleting review' });
+        console.error(error.message);
+        return res.render('error', { message: 'Error deleting review' });
     }
 }
 

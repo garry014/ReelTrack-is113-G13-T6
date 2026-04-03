@@ -86,10 +86,10 @@ exports.countByMovie = (movieId) => {
 // Get paginated reviews for a movie, newest first, with owner populated
 exports.getReviewsPaginated = (movieId, skip, limit) => {
     return Review.find({ movieId })
-        .populate('owner')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+        .populate('owner') // Populate the owner field to get user details
+        .sort({ createdAt: -1 }) // Sort by creation time, newest first
+        .skip(skip) // Skip the first 'skip' number of reviews
+        .limit(limit); // Limit the number of reviews to 'limit'
 };
 
 // Check whether a specific user has reviewed a given movie
