@@ -6,8 +6,6 @@ const { isLoggedIn, isAdmin } = require('../middleware/authMiddleware');
 // Index - Read all genres
 router.get('/', genreController.showAllGenres);
 
-// Moved to movieRoutes.js
-
 // New genre - Show form
 router.get('/new', isLoggedIn, isAdmin, genreController.showAddForm);
 

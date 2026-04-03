@@ -121,7 +121,7 @@ const editUserProfile = async (req, res) => {
             user.passwordHash = newPassword; // pre('save') hook will hash it
         }
 
-        await user.save();
+        await User.saveUser(user);
 
         req.session.userName = user.name;
         req.session.messages = { success: 'Profile updated successfully!' };

@@ -45,7 +45,7 @@ userSchema.methods.correctPassword = async function (candidatePassword, userPass
 const User = mongoose.model('User', userSchema);
 User.createUser = (data) => {
     const user = new User(data);
-    return user.save();
+    return User.saveUser(user);
 };
 
 User.findUserById = (id) => {
@@ -58,6 +58,10 @@ User.findUserByIdWithPassword = (id) => {
 
 User.findUserByEmailWithPassword = (email) => {
     return User.findOne({ email }).select('+passwordHash');
+};
+
+User.saveUser = (user) => {
+    return user.save();
 };
 
 User.deleteUserById = (id) => {
